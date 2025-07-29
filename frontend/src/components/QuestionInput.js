@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '../contexts/QueryContext';
+import { translatePopularQuestion } from '../utils/translationUtils';
 
 const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference..." }) => {
   const [question, setQuestion] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const { state, actions } = useQuery();
+  const { t } = useTranslation();
   
   const suggestions = [
     "How to install Xinference?",
@@ -148,9 +151,9 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                   className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span>{item.question}</span>
+                    <span>{translatePopularQuestion(item.question, t)}</span>
                     <span className="text-xs text-gray-400">
-                      {item.frequency} asks
+                      {item.frequency} {t('home.popular.asks')}
                     </span>
                   </div>
                 </button>

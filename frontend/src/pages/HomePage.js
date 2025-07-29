@@ -6,6 +6,7 @@ import AnswerDisplay from '../components/AnswerDisplay';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useQuery } from '../contexts/QueryContext';
 import { apiService } from '../services/api';
+import { translatePopularQuestion, translateCategory } from '../utils/translationUtils';
 import {
   BookOpenIcon,
   CodeBracketIcon,
@@ -203,13 +204,15 @@ const HomePage = () => {
                 className="text-left p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-900 font-medium">{item.question}</span>
+                  <span className="text-gray-900 font-medium">
+                    {translatePopularQuestion(item.question, t)}
+                  </span>
                   <span className="text-sm text-gray-500 ml-2">
                     {item.frequency} {t('home.popular.asks')}
                   </span>
                 </div>
                 <div className="text-sm text-gray-600 mt-1">
-                  {t('home.popular.category')}: {item.category}
+                  {t('home.popular.category')}: {translateCategory(item.category, t)}
                 </div>
               </button>
             ))}

@@ -1,0 +1,219 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "submit": "Submit"
+  },
+  "header": {
+    "title": "Xinference Q&A Assistant",
+    "home": "Home",
+    "search": "Search",
+    "about": "About",
+    "documentation": "Documentation",
+    "github": "GitHub",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "history": "Question History",
+    "favorites": "My Favorites"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "username": "Username",
+      "password": "Password",
+      "loginButton": "Login",
+      "loggingIn": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register now",
+      "usernamePlaceholder": "Enter your username",
+      "passwordPlaceholder": "Enter your password"
+    },
+    "register": {
+      "title": "Register",
+      "username": "Username",
+      "email": "Email",
+      "fullName": "Full Name",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "registerButton": "Register",
+      "registering": "Registering...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Login now",
+      "usernamePlaceholder": "Enter your username",
+      "emailPlaceholder": "Enter your email address",
+      "fullNamePlaceholder": "Enter your full name (optional)",
+      "passwordPlaceholder": "Enter password (at least 6 characters)",
+      "confirmPasswordPlaceholder": "Enter password again",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Ask anything about {{name}}",
+      "subtitle": "Get instant answers about installation, deployment, troubleshooting, and more. Powered by AI and backed by official documentation and community knowledge.",
+      "placeholder": "Ask anything about Xinference..."
+    },
+    "features": {
+      "title": "What can I help you with?",
+      "subtitle": "Explore common topics or ask your own question",
+      "installation": {
+        "title": "Installation & Setup",
+        "description": "Get help with installing and configuring Xinference",
+        "examples": [
+          "How to install Xinference with pip?",
+          "Docker installation guide",
+          "Setting up GPU support"
+        ]
+      },
+      "deployment": {
+        "title": "Model Deployment",
+        "description": "Learn how to deploy and manage different types of models",
+        "examples": [
+          "How to deploy LLM models?",
+          "Using custom models",
+          "Model memory requirements"
+        ]
+      },
+      "api": {
+        "title": "API & Integration",
+        "description": "Understand the API and integrate with your applications",
+        "examples": [
+          "OpenAI-compatible API usage",
+          "Client SDK examples",
+          "Authentication setup"
+        ]
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "description": "Solve common issues and error messages",
+        "examples": [
+          "CUDA out of memory error",
+          "Model loading failures",
+          "Connection issues"
+        ]
+      },
+      "production": {
+        "title": "Deployment",
+        "description": "Deploy Xinference in production environments",
+        "examples": [
+          "Kubernetes deployment",
+          "Cluster configuration",
+          "Load balancing"
+        ]
+      },
+      "advanced": {
+        "title": "Advanced Usage",
+        "description": "Advanced features and configuration options",
+        "examples": [
+          "Backend selection (vLLM, llama.cpp)",
+          "Performance optimization",
+          "Custom configurations"
+        ]
+      }
+    },
+    "popular": {
+      "title": "Popular Questions",
+      "asks": "asks",
+      "category": "Category",
+      "questions": {
+        "How to install Xinference?": "How to install Xinference?",
+        "How to deploy models with Docker?": "How to deploy models with Docker?",
+        "CUDA out of memory error": "CUDA out of memory error",
+        "How to use vLLM backend?": "How to use vLLM backend?",
+        "Model loading fails": "Model loading fails"
+      },
+      "categories": {
+        "installation": "installation",
+        "deployment": "deployment",
+        "troubleshooting": "troubleshooting",
+        "configuration": "configuration"
+      }
+    }
+  },
+  "search": {
+    "title": "Search Results",
+    "noResults": "No results found",
+    "searchPlaceholder": "Search Xinference related content...",
+    "filters": {
+      "all": "All",
+      "documentation": "Documentation",
+      "issues": "Issues",
+      "code": "Code"
+    }
+  },
+  "answer": {
+    "sources": "Sources",
+    "confidence": "Confidence",
+    "responseTime": "Response Time",
+    "addToFavorites": "Add to Favorites",
+    "removeFromFavorites": "Remove from Favorites",
+    "copyAnswer": "Copy Answer",
+    "shareAnswer": "Share Answer"
+  },
+  "history": {
+    "title": "Question History",
+    "empty": "No question history",
+    "question": "Question",
+    "answer": "Answer",
+    "time": "Time",
+    "confidence": "Confidence"
+  },
+  "favorites": {
+    "title": "My Favorites",
+    "empty": "No favorites yet",
+    "addedToFavorites": "Added to favorites",
+    "removedFromFavorites": "Removed from favorites",
+    "alreadyInFavorites": "Question already in favorites"
+  },
+  "profile": {
+    "title": "Profile",
+    "stats": {
+      "totalQuestions": "Total Questions",
+      "totalFavorites": "Total Favorites",
+      "avgConfidence": "Average Confidence",
+      "recentActivity": "Recent Activity"
+    },
+    "userInfo": {
+      "username": "Username",
+      "email": "Email",
+      "fullName": "Full Name",
+      "joinDate": "Join Date"
+    }
+  },
+  "about": {
+    "title": "About Xinference Q&A Assistant",
+    "description": "Xinference Q&A Assistant is an AI-powered question-answering system specifically designed to provide technical support and help for Xinference users.",
+    "features": [
+      "Intelligent Q&A system powered by DeepSeek AI",
+      "Comprehensive documentation search and retrieval",
+      "GitHub issues and discussions integration",
+      "User authentication and personalized experience",
+      "Question history and favorites functionality"
+    ],
+    "contact": "Contact Us",
+    "version": "Version"
+  },
+  "errors": {
+    "networkError": "Network connection error, please check your internet connection",
+    "serverError": "Server error, please try again later",
+    "authError": "Authentication failed, please login again",
+    "notFound": "Page not found",
+    "forbidden": "Access denied",
+    "validationError": "Input validation failed",
+    "unknownError": "Unknown error, please contact administrator"
+  }
+}

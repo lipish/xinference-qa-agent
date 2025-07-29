@@ -85,6 +85,7 @@ data/processed/
 *.csv
 *.json
 !data/sample/
+!frontend/src/i18n/locales/*.json
 
 # Model files
 *.pkl

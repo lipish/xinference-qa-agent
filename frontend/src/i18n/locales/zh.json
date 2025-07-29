@@ -1,0 +1,219 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "search": "搜索",
+    "submit": "提交"
+  },
+  "header": {
+    "title": "Xinference Q&A 助手",
+    "home": "首页",
+    "search": "搜索",
+    "about": "关于",
+    "documentation": "文档",
+    "github": "GitHub",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "profile": "个人中心",
+    "history": "提问历史",
+    "favorites": "我的收藏"
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "username": "用户名",
+      "password": "密码",
+      "loginButton": "登录",
+      "loggingIn": "登录中...",
+      "noAccount": "还没有账户？",
+      "registerLink": "立即注册",
+      "usernamePlaceholder": "请输入用户名",
+      "passwordPlaceholder": "请输入密码"
+    },
+    "register": {
+      "title": "注册",
+      "username": "用户名",
+      "email": "邮箱",
+      "fullName": "姓名",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "registerButton": "注册",
+      "registering": "注册中...",
+      "hasAccount": "已有账户？",
+      "loginLink": "立即登录",
+      "usernamePlaceholder": "请输入用户名",
+      "emailPlaceholder": "请输入邮箱地址",
+      "fullNamePlaceholder": "请输入真实姓名（可选）",
+      "passwordPlaceholder": "请输入密码（至少6个字符）",
+      "confirmPasswordPlaceholder": "请再次输入密码",
+      "passwordMismatch": "密码不匹配",
+      "passwordTooShort": "密码至少需要6个字符"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "询问任何关于 {{name}} 的问题",
+      "subtitle": "获取关于安装、部署、故障排除等方面的即时答案。由AI驱动，基于官方文档和社区知识。",
+      "placeholder": "询问任何关于Xinference的问题..."
+    },
+    "features": {
+      "title": "我可以为您提供什么帮助？",
+      "subtitle": "探索常见主题或提出您自己的问题",
+      "installation": {
+        "title": "安装与设置",
+        "description": "获取安装和配置Xinference的帮助",
+        "examples": [
+          "如何使用pip安装Xinference？",
+          "Docker安装指南",
+          "设置GPU支持"
+        ]
+      },
+      "deployment": {
+        "title": "模型部署",
+        "description": "学习如何部署和管理不同类型的模型",
+        "examples": [
+          "如何部署LLM模型？",
+          "使用自定义模型",
+          "模型内存需求"
+        ]
+      },
+      "api": {
+        "title": "API与集成",
+        "description": "了解API并与您的应用程序集成",
+        "examples": [
+          "OpenAI兼容API使用",
+          "客户端SDK示例",
+          "身份验证设置"
+        ]
+      },
+      "troubleshooting": {
+        "title": "故障排除",
+        "description": "解决常见问题和错误消息",
+        "examples": [
+          "CUDA内存不足错误",
+          "模型加载失败",
+          "连接问题"
+        ]
+      },
+      "production": {
+        "title": "生产部署",
+        "description": "在生产环境中部署Xinference",
+        "examples": [
+          "Kubernetes部署",
+          "集群配置",
+          "负载均衡"
+        ]
+      },
+      "advanced": {
+        "title": "高级用法",
+        "description": "高级功能和配置选项",
+        "examples": [
+          "后端选择（vLLM、llama.cpp）",
+          "性能优化",
+          "自定义配置"
+        ]
+      }
+    },
+    "popular": {
+      "title": "热门问题",
+      "asks": "次询问",
+      "category": "分类",
+      "questions": {
+        "How to install Xinference?": "如何安装Xinference？",
+        "How to deploy models with Docker?": "如何使用Docker部署模型？",
+        "CUDA out of memory error": "CUDA内存不足错误",
+        "How to use vLLM backend?": "如何使用vLLM后端？",
+        "Model loading fails": "模型加载失败"
+      },
+      "categories": {
+        "installation": "安装",
+        "deployment": "部署",
+        "troubleshooting": "故障排除",
+        "configuration": "配置"
+      }
+    }
+  },
+  "search": {
+    "title": "搜索结果",
+    "noResults": "未找到相关结果",
+    "searchPlaceholder": "搜索 Xinference 相关内容...",
+    "filters": {
+      "all": "全部",
+      "documentation": "文档",
+      "issues": "问题",
+      "code": "代码"
+    }
+  },
+  "answer": {
+    "sources": "参考来源",
+    "confidence": "置信度",
+    "responseTime": "响应时间",
+    "addToFavorites": "添加到收藏",
+    "removeFromFavorites": "从收藏中移除",
+    "copyAnswer": "复制答案",
+    "shareAnswer": "分享答案"
+  },
+  "history": {
+    "title": "提问历史",
+    "empty": "暂无提问历史",
+    "question": "问题",
+    "answer": "答案",
+    "time": "时间",
+    "confidence": "置信度"
+  },
+  "favorites": {
+    "title": "我的收藏",
+    "empty": "暂无收藏内容",
+    "addedToFavorites": "已添加到收藏",
+    "removedFromFavorites": "已从收藏中移除",
+    "alreadyInFavorites": "问题已在收藏中"
+  },
+  "profile": {
+    "title": "个人中心",
+    "stats": {
+      "totalQuestions": "总提问数",
+      "totalFavorites": "收藏数量",
+      "avgConfidence": "平均置信度",
+      "recentActivity": "最近活动"
+    },
+    "userInfo": {
+      "username": "用户名",
+      "email": "邮箱",
+      "fullName": "姓名",
+      "joinDate": "注册时间"
+    }
+  },
+  "about": {
+    "title": "关于 Xinference Q&A 助手",
+    "description": "Xinference Q&A 助手是一个基于人工智能的问答系统，专门为 Xinference 用户提供技术支持和帮助。",
+    "features": [
+      "智能问答系统，基于 DeepSeek AI",
+      "全面的文档搜索和检索",
+      "GitHub 问题和讨论集成",
+      "用户认证和个性化体验",
+      "提问历史和收藏功能"
+    ],
+    "contact": "联系我们",
+    "version": "版本"
+  },
+  "errors": {
+    "networkError": "网络连接错误，请检查您的网络连接",
+    "serverError": "服务器错误，请稍后重试",
+    "authError": "认证失败，请重新登录",
+    "notFound": "页面未找到",
+    "forbidden": "访问被拒绝",
+    "validationError": "输入验证失败",
+    "unknownError": "未知错误，请联系管理员"
+  }
+}

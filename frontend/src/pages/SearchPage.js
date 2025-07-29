@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '../contexts/QueryContext';
 import QuestionInput from '../components/QuestionInput';
 import AnswerDisplay from '../components/AnswerDisplay';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { apiService } from '../services/api';
+import { translatePopularQuestion, translateCategory } from '../utils/translationUtils';
 import {
   ClockIcon,
   HeartIcon,
@@ -64,6 +66,7 @@ const SearchPage = () => {
   const [currentAnswer, setCurrentAnswer] = useState(null);
   const [activeTab, setActiveTab] = useState('search');
   const { state, actions } = useQuery();
+  const { t } = useTranslation();
 
   const handleQuestionSubmit = async (question) => {
     actions.setQuery(question);
@@ -263,7 +266,7 @@ const SearchPage = () => {
           {state.popularQuestions.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Popular Questions
+                {t('home.popular.title')}
               </h3>
               <div className="space-y-3">
                 {state.popularQuestions.slice(0, 5).map((item, index) => (
@@ -273,10 +276,10 @@ const SearchPage = () => {
                     className="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
                   >
                     <div className="text-sm font-medium text-gray-900 mb-1">
-                      {item.question}
+                      {translatePopularQuestion(item.question, t)}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {item.frequency} asks • {item.category}
+                      {item.frequency} {t('home.popular.asks')} • {translateCategory(item.category, t)}
                     </div>
                   </button>
                 ))}
