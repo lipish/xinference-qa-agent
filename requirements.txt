@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pydantic
+httpx
+beautifulsoup4
+requests
+python-multipart
+jinja2
+aiofiles
+python-dotenv
+openai
+markdown
+python-jose[cryptography]
+passlib[bcrypt]
+sqlalchemy
+alembic
