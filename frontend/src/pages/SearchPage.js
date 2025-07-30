@@ -13,7 +13,7 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 
-const SearchHistoryItem = ({ item, onSelect, onRemove }) => (
+const SearchHistoryItem = ({ item, onSelect, onRemove, t }) => (
   <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
     <button
       onClick={() => onSelect(item.question)}
@@ -39,7 +39,7 @@ const SearchHistoryItem = ({ item, onSelect, onRemove }) => (
   </div>
 );
 
-const FavoriteItem = ({ item, onSelect, onRemove }) => (
+const FavoriteItem = ({ item, onSelect, onRemove, t }) => (
   <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
     <button
       onClick={() => onSelect(item.question)}
@@ -50,7 +50,7 @@ const FavoriteItem = ({ item, onSelect, onRemove }) => (
         {item.answer.substring(0, 150)}...
       </div>
       <div className="text-xs text-gray-500">
-        Saved on {new Date(item.timestamp).toLocaleDateString()}
+        {t('search.history.savedOn')} {new Date(item.timestamp).toLocaleDateString()}
       </div>
     </button>
     <button
@@ -118,18 +118,18 @@ const SearchPage = () => {
   };
 
   const tabs = [
-    { id: 'search', name: 'Search', icon: MagnifyingGlassIcon },
-    { id: 'history', name: 'History', icon: ClockIcon },
-    { id: 'favorites', name: 'Favorites', icon: HeartIcon }
+    { id: 'search', name: t('search.tabs.search'), icon: MagnifyingGlassIcon },
+    { id: 'history', name: t('search.tabs.history'), icon: ClockIcon },
+    { id: 'favorites', name: t('search.tabs.favorites'), icon: HeartIcon }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-12">
       {/* Search Input */}
-      <div className="mb-8">
-        <QuestionInput 
+      <div>
+        <QuestionInput
           onSubmit={handleQuestionSubmit}
-          placeholder="Search Xinference documentation and issues..."
+          placeholder={t('search.placeholder')}
         />
         
         {state.error && (
@@ -140,7 +140,7 @@ const SearchPage = () => {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6">
+      <div>
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
             {tabs.map((tab) => {
@@ -195,11 +195,10 @@ const SearchPage = () => {
                 <div className="text-center py-12">
                   <MagnifyingGlassIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Search Xinference Knowledge Base
+                    {t('search.title')}
                   </h3>
                   <p className="text-gray-600">
-                    Ask any question about Xinference and get answers from documentation, 
-                    GitHub issues, and source code.
+                    {t('search.description')}
                   </p>
                 </div>
               )}
@@ -212,7 +211,7 @@ const SearchPage = () => {
           {activeTab === 'history' && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Search History
+                {t('search.history.title')}
               </h3>
               {state.searchHistory.length > 0 ? (
                 <div className="space-y-3">
@@ -222,13 +221,14 @@ const SearchPage = () => {
                       item={item}
                       onSelect={handleQuestionSubmit}
                       onRemove={removeFromHistory}
+                      t={t}
                     />
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   <ClockIcon className="w-8 h-8 mx-auto mb-2" />
-                  <p>No search history yet</p>
+                  <p>{t('search.history.empty')}</p>
                 </div>
               )}
             </div>
@@ -237,7 +237,7 @@ const SearchPage = () => {
           {activeTab === 'favorites' && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Favorite Answers
+                {t('search.favorites.title')}
               </h3>
               {state.favorites.length > 0 ? (
                 <div className="space-y-3">
@@ -247,16 +247,14 @@ const SearchPage = () => {
                       item={item}
                       onSelect={handleQuestionSubmit}
                       onRemove={actions.removeFromFavorites}
+                      t={t}
                     />
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   <HeartIcon className="w-8 h-8 mx-auto mb-2" />
-                  <p>No favorites yet</p>
-                  <p className="text-sm mt-1">
-                    Click the heart icon on answers to save them
-                  </p>
+                  <p>{t('search.favorites.empty')}</p>
                 </div>
               )}
             </div>

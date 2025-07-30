@@ -142,6 +142,111 @@
         "troubleshooting": "故障排除",
         "configuration": "配置"
       }
+    },
+    "search": {
+      "title": "搜索Xinference知识库",
+      "description": "询问任何关于Xinference的问题，从文档、GitHub问题和源代码中获取答案。",
+      "placeholder": "搜索Xinference文档和问题...",
+      "tabs": {
+        "search": "搜索",
+        "history": "历史",
+        "favorites": "收藏"
+      },
+      "history": {
+        "title": "搜索历史",
+        "empty": "暂无搜索历史",
+        "savedOn": "保存于"
+      },
+      "favorites": {
+        "title": "收藏夹",
+        "empty": "暂无收藏内容"
+      }
+    },
+    "about": {
+      "title": "关于Xinference Q&A助手",
+      "subtitle": "一个智能助手，旨在帮助您充分利用Xinference这个开源AI模型推理平台。",
+      "whatIs": {
+        "title": "这是什么？",
+        "description1": "Xinference Q&A助手是一个AI驱动的助手，帮助用户找到关于Xinference问题的答案。无论您是想安装Xinference、部署模型、排除故障还是了解高级功能，这个助手都能提供即时、准确的答案。",
+        "description2": "该助手搜索多个来源，包括官方文档、GitHub问题和源代码，以提供带有适当来源归属的全面答案。每个回答都包含置信度分数和原始来源链接以供验证。"
+      },
+      "features": {
+        "title": "主要功能",
+        "subtitle": "强大的功能帮助您在Xinference上取得成功",
+        "docSearch": {
+          "title": "文档搜索",
+          "description": "通过语义理解搜索官方Xinference文档，找到您需要的确切内容。"
+        },
+        "githubIntegration": {
+          "title": "GitHub集成",
+          "description": "从GitHub问题和源代码中获取真实解决方案，解决社区面临的问题。"
+        },
+        "aiAnswers": {
+          "title": "AI驱动的答案",
+          "description": "获得由AI生成的智能回答，结合多个来源的信息提供全面的答案。"
+        },
+        "communityKnowledge": {
+          "title": "社区知识",
+          "description": "通过精选的问题和答案，受益于Xinference社区的集体知识。"
+        },
+        "sourceAttribution": {
+          "title": "来源归属",
+          "description": "每个答案都包含清晰的来源归属，让您可以验证信息并在需要时深入了解。"
+        },
+        "fastReliable": {
+          "title": "快速可靠",
+          "description": "获得带有置信度分数和响应时间的即时答案，让您可以信任收到的信息。"
+        }
+      },
+      "howItWorks": {
+        "title": "工作原理",
+        "step1": {
+          "title": "提出问题",
+          "description": "用自然语言输入您关于Xinference的问题。系统理解上下文并能处理复杂查询。"
+        },
+        "step2": {
+          "title": "搜索分析",
+          "description": "助手使用语义搜索在文档、GitHub问题和源代码中搜索最相关的信息。"
+        },
+        "step3": {
+          "title": "获得答案",
+          "description": "收到带有来源归属、置信度分数和深入了解主题链接的全面答案。"
+        }
+      },
+      "dataSources": {
+        "title": "数据来源",
+        "officialDocs": {
+          "title": "官方文档",
+          "description": "来自inference.readthedocs.io的完整文档，包括安装指南、API参考和教程。"
+        },
+        "githubIssues": {
+          "title": "GitHub问题",
+          "description": "来自Xinference GitHub仓库的真实问题和解决方案，包括错误报告、功能请求和社区讨论。"
+        },
+        "sourceCode": {
+          "title": "源代码",
+          "description": "直接访问Xinference源代码，获取实现细节和高级配置选项。"
+        }
+      },
+      "learnMore": {
+        "title": "了解更多关于Xinference",
+        "documentation": {
+          "title": "文档",
+          "description": "官方文档和指南"
+        },
+        "github": {
+          "title": "GitHub仓库",
+          "description": "源代码和问题跟踪器"
+        },
+        "issues": {
+          "title": "问题和支持",
+          "description": "社区支持和错误报告"
+        },
+        "discord": {
+          "title": "Discord社区",
+          "description": "加入社区聊天"
+        }
+      }
     }
   },
   "search": {
