@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   HomeIcon,
   MagnifyingGlassIcon,
-  InformationCircleIcon,
-  BookOpenIcon
+  InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import UserMenu from './auth/UserMenu';
@@ -32,8 +31,12 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-primary-600 rounded-lg">
-              <BookOpenIcon className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-center w-10 h-10">
+              <img
+                src="/logo.svg"
+                alt="Xinference Logo"
+                className="w-10 h-10"
+              />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">
