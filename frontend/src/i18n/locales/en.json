@@ -16,7 +16,7 @@
     "submit": "Submit"
   },
   "header": {
-    "title": "Xinference Q&A Assistant",
+    "title": "FAQ",
     "home": "Home",
     "search": "Search",
     "about": "About",
@@ -163,12 +163,12 @@
       }
     },
     "about": {
-      "title": "About Xinference Q&A Agent",
-      "subtitle": "An intelligent assistant designed to help you get the most out of Xinference, the open-source platform for running AI model inference.",
+      "title": "About FAQ",
+      "subtitle": "An intelligent FAQ system designed to help you get the most out of Xinference, the open-source platform for running AI model inference.",
       "whatIs": {
         "title": "What is this?",
-        "description1": "The Xinference Q&A Agent is an AI-powered assistant that helps users find answers to their questions about Xinference. Whether you're trying to install Xinference, deploy models, troubleshoot issues, or understand advanced features, this agent can provide instant, accurate answers.",
-        "description2": "The agent searches through multiple sources including official documentation, GitHub issues, and source code to provide comprehensive answers with proper source attribution. Each response includes a confidence score and links to the original sources for verification."
+        "description1": "The Xinference FAQ is an AI-powered system that helps users find answers to their questions about Xinference. Whether you're trying to install Xinference, deploy models, troubleshoot issues, or understand advanced features, this system can provide instant, accurate answers.",
+        "description2": "The system searches through multiple sources including official documentation, GitHub issues, and source code to provide comprehensive answers with proper source attribution. Each response includes a confidence score and links to the original sources for verification."
       },
       "features": {
         "title": "Key Features",
@@ -300,8 +300,8 @@
     }
   },
   "about": {
-    "title": "About Xinference Q&A Assistant",
-    "description": "Xinference Q&A Assistant is an AI-powered question-answering system specifically designed to provide technical support and help for Xinference users.",
+    "title": "About FAQ",
+    "description": "Xinference FAQ is an AI-powered question-answering system specifically designed to provide technical support and help for Xinference users.",
     "features": [
       "Intelligent Q&A system powered by DeepSeek AI",
       "Comprehensive documentation search and retrieval",

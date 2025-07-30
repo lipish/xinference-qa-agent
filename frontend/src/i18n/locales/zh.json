@@ -16,7 +16,7 @@
     "submit": "提交"
   },
   "header": {
-    "title": "Xinference Q&A 助手",
+    "title": "问答社区",
     "home": "首页",
     "search": "搜索",
     "about": "关于",
@@ -163,12 +163,12 @@
       }
     },
     "about": {
-      "title": "关于Xinference Q&A助手",
-      "subtitle": "一个智能助手，旨在帮助您充分利用Xinference这个开源AI模型推理平台。",
+      "title": "关于问答社区",
+      "subtitle": "一个智能问答系统，旨在帮助您充分利用Xinference这个开源AI模型推理平台。",
       "whatIs": {
         "title": "这是什么？",
-        "description1": "Xinference Q&A助手是一个AI驱动的助手，帮助用户找到关于Xinference问题的答案。无论您是想安装Xinference、部署模型、排除故障还是了解高级功能，这个助手都能提供即时、准确的答案。",
-        "description2": "该助手搜索多个来源，包括官方文档、GitHub问题和源代码，以提供带有适当来源归属的全面答案。每个回答都包含置信度分数和原始来源链接以供验证。"
+        "description1": "Xinference问答是一个AI驱动的问答系统，帮助用户找到关于Xinference问题的答案。无论您是想安装Xinference、部署模型、排除故障还是了解高级功能，这个系统都能提供即时、准确的答案。",
+        "description2": "该系统搜索多个来源，包括官方文档、GitHub问题和源代码，以提供带有适当来源归属的全面答案。每个回答都包含置信度分数和原始来源链接以供验证。"
       },
       "features": {
         "title": "主要功能",
@@ -206,7 +206,7 @@
         },
         "step2": {
           "title": "搜索分析",
-          "description": "助手使用语义搜索在文档、GitHub问题和源代码中搜索最相关的信息。"
+          "description": "系统使用语义搜索在文档、GitHub问题和源代码中搜索最相关的信息。"
         },
         "step3": {
           "title": "获得答案",
