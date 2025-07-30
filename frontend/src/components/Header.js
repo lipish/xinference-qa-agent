@@ -42,9 +42,6 @@ const Header = () => {
               <h1 className="text-xl font-bold text-gray-900">
                 {t('header.title')}
               </h1>
-              <p className="text-sm text-gray-500">
-                AI-powered assistant
-              </p>
             </div>
           </Link>
 
