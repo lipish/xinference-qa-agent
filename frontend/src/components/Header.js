@@ -33,9 +33,9 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-3">
             <div className="flex items-center justify-center w-10 h-10">
               <img
-                src="/logo.svg"
+                src="/xinference.svg"
                 alt="Xinference Logo"
-                className="w-10 h-10"
+                className="w-10 h-10 object-contain"
               />
             </div>
             <div>
