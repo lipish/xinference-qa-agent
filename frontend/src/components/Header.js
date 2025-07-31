@@ -31,11 +31,11 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-32 h-32">
+            <div className="flex items-center justify-center">
               <img
                 src="/logo.png"
                 alt="Xinference Logo"
-                className="w-32 h-32 object-contain"
+                className="h-16 object-contain"
               />
             </div>
             <div>
