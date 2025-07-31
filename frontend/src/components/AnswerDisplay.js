@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   ClipboardDocumentIcon,
   HeartIcon,
@@ -9,7 +11,9 @@ import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   ClockIcon,
-  LinkIcon
+  LinkIcon,
+  HomeIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '../contexts/QueryContext';
@@ -122,7 +126,9 @@ const SourceCard = ({ source, index }) => {
 const AnswerDisplay = ({ answer, onFeedback }) => {
   const [copied, setCopied] = useState(false);
   const { state, actions } = useQuery();
-  
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const isFavorited = state.favorites.some(fav => fav.question === answer.question);
   
   const handleCopy = async () => {
@@ -163,9 +169,38 @@ const AnswerDisplay = ({ answer, onFeedback }) => {
       await navigator.clipboard.writeText(window.location.href);
     }
   };
-  
+
+  const handleNewQuestion = () => {
+    // Clear current answer and navigate to home
+    actions.clearResults();
+    navigate('/');
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="space-y-6">
+      {/* Navigation Bar */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={handleBackToHome}
+          className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <HomeIcon className="w-4 h-4" />
+          <span className="text-sm font-medium">{t('common.back', '返回主页')}</span>
+        </button>
+
+        <button
+          onClick={handleNewQuestion}
+          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors"
+        >
+          <PlusIcon className="w-4 h-4" />
+          <span className="text-sm font-medium">{t('common.newQuestion', '新问题')}</span>
+        </button>
+      </div>
+
       {/* Answer Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between mb-4">

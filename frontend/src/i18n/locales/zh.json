@@ -10,11 +10,12 @@
     "delete": "删除",
     "edit": "编辑",
     "close": "关闭",
-    "back": "返回",
+    "back": "返回主页",
     "next": "下一步",
     "previous": "上一步",
     "search": "搜索",
-    "submit": "提交"
+    "submit": "提交",
+    "newQuestion": "新问题"
   },
   "header": {
     "title": "问答社区",

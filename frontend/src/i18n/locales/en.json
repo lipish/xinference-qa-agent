@@ -10,11 +10,12 @@
     "delete": "Delete",
     "edit": "Edit",
     "close": "Close",
-    "back": "Back",
+    "back": "Back to Home",
     "next": "Next",
     "previous": "Previous",
     "search": "Search",
-    "submit": "Submit"
+    "submit": "Submit",
+    "newQuestion": "New Question"
   },
   "header": {
     "title": "FAQ",
