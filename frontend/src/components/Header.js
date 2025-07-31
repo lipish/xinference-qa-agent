@@ -35,7 +35,7 @@ const Header = () => {
               <img
                 src="/logo.png"
                 alt="Xinference Logo"
-                className="h-16 object-contain"
+                className="h-8 object-contain"
               />
             </div>
             <div>
