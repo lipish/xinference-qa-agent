@@ -97,7 +97,7 @@ const SearchPage = () => {
 
   const handleFeedback = async (helpful) => {
     if (!currentAnswer) return;
-    
+
     try {
       await apiService.submitFeedback({
         question: currentAnswer.question,
@@ -109,6 +109,11 @@ const SearchPage = () => {
     } catch (error) {
       console.error('Failed to submit feedback:', error);
     }
+  };
+
+  const handleClearAnswer = () => {
+    setCurrentAnswer(null);
+    actions.clearResults();
   };
 
   const removeFromHistory = (question) => {
@@ -185,9 +190,10 @@ const SearchPage = () => {
               {state.isLoading && <LoadingSpinner />}
               
               {currentAnswer && !state.isLoading && (
-                <AnswerDisplay 
-                  answer={currentAnswer} 
+                <AnswerDisplay
+                  answer={currentAnswer}
                   onFeedback={handleFeedback}
+                  onClearAnswer={handleClearAnswer}
                 />
               )}
               

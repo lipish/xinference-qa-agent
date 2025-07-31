@@ -123,7 +123,7 @@ const SourceCard = ({ source, index }) => {
   );
 };
 
-const AnswerDisplay = ({ answer, onFeedback }) => {
+const AnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [copied, setCopied] = useState(false);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
@@ -171,12 +171,18 @@ const AnswerDisplay = ({ answer, onFeedback }) => {
   };
 
   const handleNewQuestion = () => {
+    console.log('New Question button clicked');
     // Clear current answer and navigate to home
-    actions.clearResults();
+    if (onClearAnswer) {
+      onClearAnswer();
+    } else {
+      actions.clearResults();
+    }
     navigate('/');
   };
 
   const handleBackToHome = () => {
+    console.log('Back to Home button clicked');
     navigate('/');
   };
 

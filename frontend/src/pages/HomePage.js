@@ -79,7 +79,7 @@ const HomePage = () => {
 
   const handleFeedback = async (helpful) => {
     if (!currentAnswer) return;
-    
+
     try {
       await apiService.submitFeedback({
         question: currentAnswer.question,
@@ -91,6 +91,11 @@ const HomePage = () => {
     } catch (error) {
       console.error('Failed to submit feedback:', error);
     }
+  };
+
+  const handleClearAnswer = () => {
+    setCurrentAnswer(null);
+    actions.clearResults();
   };
 
   const features = [
@@ -162,9 +167,10 @@ const HomePage = () => {
       {/* Answer Display */}
       {currentAnswer && !state.isLoading && (
         <div className="max-w-6xl mx-auto">
-          <AnswerDisplay 
-            answer={currentAnswer} 
+          <AnswerDisplay
+            answer={currentAnswer}
             onFeedback={handleFeedback}
+            onClearAnswer={handleClearAnswer}
           />
         </div>
       )}
