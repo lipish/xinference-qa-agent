@@ -41,23 +41,29 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleQuestionSubmit = async (question) => {
-    actions.setQuery(question);
+  const handleQuestionSubmit = async (input) => {
+    // Handle both string (legacy) and object (new) input formats
+    const questionText = typeof input === 'string' ? input : input.text;
+    const files = typeof input === 'object' && input.files ? input.files : [];
+
+    actions.setQuery(questionText);
     actions.setLoading(true);
     actions.clearResults();
     setCurrentAnswer(null);
 
     try {
-      const response = await apiService.askQuestion(question);
-      
+      // For now, we'll just use the text. File handling can be added later
+      const response = await apiService.askQuestion(questionText);
+
       // Add to search history
       actions.addToHistory({
-        question,
+        question: questionText,
         answer: response.answer,
         timestamp: new Date().toISOString(),
-        confidence: response.confidence
+        confidence: response.confidence,
+        files: files.length > 0 ? files.map(f => f.name) : undefined
       });
-      
+
       setCurrentAnswer(response);
       actions.setResults(response.sources || []);
     } catch (error) {
