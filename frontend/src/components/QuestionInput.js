@@ -93,16 +93,22 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
-    setIsDragging(false);
+    e.stopPropagation();
+    // Only set dragging to false if we're leaving the container
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsDragging(false);
+    }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
     handleFiles(files);
@@ -158,10 +164,10 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
     <div className="relative w-full max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="relative">
         <div
-          className={`relative border-2 rounded-2xl transition-all duration-200 ${
+          className={`relative bg-white border rounded-2xl shadow-sm transition-all duration-200 ${
             isDragging
-              ? 'border-primary-400 bg-primary-50'
-              : 'border-gray-200 hover:border-gray-300 focus-within:border-primary-500'
+              ? 'border-blue-300 bg-blue-50 shadow-md'
+              : 'border-gray-200 hover:shadow-md focus-within:border-gray-300 focus-within:shadow-md'
           } ${state.isLoading ? 'opacity-50' : ''}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -169,20 +175,20 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
         >
           {/* File Upload Area */}
           {uploadedFiles.length > 0 && (
-            <div className="p-3 border-b border-gray-100">
+            <div className="p-4 border-b border-gray-100">
               <div className="flex flex-wrap gap-2">
                 {uploadedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 text-sm">
+                  <div key={index} className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 rounded-xl px-3 py-2 text-sm border border-gray-200 transition-colors">
                     {file.type.startsWith('image/') ? (
-                      <PhotoIcon className="h-4 w-4 text-blue-500" />
+                      <PhotoIcon className="h-4 w-4 text-blue-500 flex-shrink-0" />
                     ) : (
-                      <DocumentIcon className="h-4 w-4 text-gray-500" />
+                      <DocumentIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
                     )}
-                    <span className="truncate max-w-32">{file.name}</span>
+                    <span className="truncate max-w-32 text-gray-700">{file.name}</span>
                     <button
                       type="button"
                       onClick={() => removeFile(index)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
+                      className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 ml-1"
                     >
                       <XMarkIcon className="h-4 w-4" />
                     </button>
@@ -203,20 +209,20 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
               onBlur={handleInputBlur}
               placeholder={placeholder}
               rows={1}
-              className="block w-full px-4 py-4 text-lg border-0 rounded-2xl resize-none placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent"
-              style={{ minHeight: '60px', maxHeight: '200px' }}
+              className="block w-full px-4 py-4 text-base border-0 rounded-2xl resize-none placeholder-gray-500 focus:outline-none focus:ring-0 bg-transparent text-gray-900 leading-6"
+              style={{ minHeight: '56px', maxHeight: '200px' }}
               disabled={state.isLoading}
             />
 
             {/* Bottom Toolbar */}
-            <div className="flex items-center justify-between px-4 pb-3">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between px-4 pb-3 pt-1">
+              <div className="flex items-center gap-1">
                 {/* Add Button */}
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Upload files"
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                  title="上传文件"
                 >
                   <PlusIcon className="h-5 w-5" />
                 </button>
@@ -225,8 +231,8 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Upload image"
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                  title="上传图片"
                 >
                   <PhotoIcon className="h-5 w-5" />
                 </button>
@@ -235,8 +241,8 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Upload document"
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                  title="上传文档"
                 >
                   <DocumentIcon className="h-5 w-5" />
                 </button>
@@ -244,8 +250,8 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                 {/* Voice Input (placeholder) */}
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Voice input"
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all opacity-50 cursor-not-allowed"
+                  title="语音输入（即将推出）"
                   disabled
                 >
                   <MicrophoneIcon className="h-5 w-5" />
@@ -256,9 +262,13 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
               <button
                 type="submit"
                 disabled={(!question.trim() && uploadedFiles.length === 0) || state.isLoading}
-                className="p-2 text-primary-600 hover:text-primary-700 hover:bg-primary-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent rounded-lg transition-all"
+                className={`p-2 rounded-lg transition-all ${
+                  (!question.trim() && uploadedFiles.length === 0) || state.isLoading
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'
+                }`}
               >
-                <PaperAirplaneIcon className="h-6 w-6" />
+                <PaperAirplaneIcon className="h-5 w-5" />
               </button>
             </div>
           </div>
