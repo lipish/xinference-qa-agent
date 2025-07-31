@@ -124,26 +124,15 @@ const HomePage = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-12">
-      {/* Hero Section */}
+      {/* Search Section */}
       <div className="text-center space-y-6">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
-            {t('home.hero.title', { name: 'Xinference' }).split('Xinference')[0]}
-            <span className="text-primary-600">Xinference</span>
-            {t('home.hero.title', { name: 'Xinference' }).split('Xinference')[1] || ''}
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('home.hero.subtitle')}
-          </p>
-        </div>
-        
         <div className="max-w-4xl mx-auto">
           <QuestionInput
             onSubmit={handleQuestionSubmit}
             placeholder={t('home.hero.placeholder')}
           />
         </div>
-        
+
         {state.error && (
           <div className="max-w-4xl mx-auto">
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
