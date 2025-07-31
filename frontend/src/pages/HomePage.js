@@ -16,7 +16,7 @@ import {
   CommandLineIcon
 } from '@heroicons/react/24/outline';
 
-const FeatureCard = ({ icon: Icon, title, description, examples }) => (
+const FeatureCard = ({ icon: Icon, title, description, examples, onQuestionClick }) => (
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
     <div className="flex items-center space-x-3 mb-4">
       <div className="flex items-center justify-center w-10 h-10 bg-primary-100 rounded-lg">
@@ -27,9 +27,13 @@ const FeatureCard = ({ icon: Icon, title, description, examples }) => (
     <p className="text-gray-600 mb-4">{description}</p>
     <div className="space-y-2">
       {examples.map((example, index) => (
-        <div key={index} className="text-sm text-gray-500 bg-gray-50 rounded px-3 py-2">
+        <button
+          key={index}
+          onClick={() => onQuestionClick(example)}
+          className="w-full text-left text-sm text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-700 rounded px-3 py-2 transition-colors cursor-pointer border border-transparent hover:border-primary-200"
+        >
           "{example}"
-        </div>
+        </button>
       ))}
     </div>
   </div>
@@ -179,7 +183,7 @@ const HomePage = () => {
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
-              <FeatureCard key={index} {...feature} />
+              <FeatureCard key={index} {...feature} onQuestionClick={handleQuestionSubmit} />
             ))}
           </div>
         </div>

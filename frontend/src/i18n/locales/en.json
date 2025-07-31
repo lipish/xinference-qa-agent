@@ -76,7 +76,10 @@
         "examples": [
           "How to install Xinference with pip?",
           "Docker installation guide",
-          "Setting up GPU support"
+          "Setting up GPU support",
+          "Installing on Ubuntu system",
+          "Windows installation steps",
+          "macOS installation notes"
         ]
       },
       "deployment": {
@@ -85,7 +88,10 @@
         "examples": [
           "How to deploy LLM models?",
           "Using custom models",
-          "Model memory requirements"
+          "Model memory requirements",
+          "How to deploy ChatGLM models?",
+          "Llama model deployment tutorial",
+          "Multi-GPU model deployment"
         ]
       },
       "api": {
@@ -94,7 +100,10 @@
         "examples": [
           "OpenAI-compatible API usage",
           "Client SDK examples",
-          "Authentication setup"
+          "Authentication setup",
+          "Python client tutorial",
+          "REST API call examples",
+          "Streaming response handling"
         ]
       },
       "troubleshooting": {
@@ -103,7 +112,10 @@
         "examples": [
           "CUDA out of memory error",
           "Model loading failures",
-          "Connection issues"
+          "Connection issues",
+          "Port already in use problem",
+          "Permission error handling",
+          "Dependency conflicts resolution"
         ]
       },
       "production": {
@@ -112,7 +124,10 @@
         "examples": [
           "Kubernetes deployment",
           "Cluster configuration",
-          "Load balancing"
+          "Load balancing",
+          "Docker Compose deployment",
+          "Monitoring and logging setup",
+          "High availability configuration"
         ]
       },
       "advanced": {
@@ -121,7 +136,10 @@
         "examples": [
           "Backend selection (vLLM, llama.cpp)",
           "Performance optimization",
-          "Custom configurations"
+          "Custom configurations",
+          "Quantized model usage",
+          "Distributed inference setup",
+          "Memory optimization tips"
         ]
       }
     },
