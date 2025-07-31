@@ -59,6 +59,11 @@ async def startup_event():
     await github_service.initialize()
     await search_service.initialize()
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup resources on shutdown"""
+    await response_service.close()
+
 @app.get("/")
 async def root():
     return {"message": "Xinference Q&A Agent API"}

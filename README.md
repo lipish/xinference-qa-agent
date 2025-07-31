@@ -20,7 +20,7 @@ An intelligent AI-powered assistant that helps users find answers to their quest
 - **Semantic search** using sentence transformers and FAISS
 - **Documentation scraper** for Xinference docs
 - **GitHub API integration** for issues and code search
-- **AI response generation** using OpenAI API (optional)
+- **AI response generation** using GLM-4.5 API
 - **Caching system** for improved performance
 
 ### Frontend (React)

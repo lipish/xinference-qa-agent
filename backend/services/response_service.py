@@ -1,27 +1,38 @@
 import asyncio
 import time
+import json
 from typing import List, Optional
 import os
-import openai
-from openai import AsyncOpenAI
+import httpx
 
 from models.schemas import SearchResult, GeneratedAnswer
 
 class ResponseService:
     def __init__(self):
         self.client = None
-        self.model = "deepseek-chat"  # DeepSeek model
+        self.model = "glm-4.5"  # GLM-4.5 model
+        self.base_url = "https://open.bigmodel.cn/api/paas/v4"
 
-        # Initialize DeepSeek client (compatible with OpenAI API)
-        api_key = os.getenv("DEEPSEEK_API_KEY", "sk-118abb56c3df4dbe807eaeb3a842498c")
+        # Initialize GLM API client
+        api_key = os.getenv("GLM_API_KEY", "400c9da1294c4b14bbe5e5db27e9a058.C2mJyUDphuVfEGgc")
         if api_key:
-            self.client = AsyncOpenAI(
-                api_key=api_key,
-                base_url="https://api.deepseek.com"
+            self.api_key = api_key
+            self.client = httpx.AsyncClient(
+                base_url=self.base_url,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                timeout=60.0
             )
-            print("DeepSeek API initialized successfully")
+            print("GLM-4.5 API initialized successfully")
         else:
-            print("Warning: No DeepSeek API key found. Response generation will be limited.")
+            print("Warning: No GLM API key found. Response generation will be limited.")
+
+    async def close(self):
+        """Close the HTTP client"""
+        if self.client:
+            await self.client.aclose()
     
     async def generate_answer(
         self, 
@@ -39,14 +50,14 @@ class ResponseService:
         try:
             # Prepare context from search results
             context_text = self._prepare_context(search_results)
-            
+
             # Create the prompt
             prompt = self._create_prompt(question, context_text, context)
-            
-            # Generate response using OpenAI
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[
+
+            # Generate response using GLM API
+            payload = {
+                "model": self.model,
+                "messages": [
                     {
                         "role": "system",
                         "content": self._get_system_prompt()
@@ -56,18 +67,25 @@ class ResponseService:
                         "content": prompt
                     }
                 ],
-                max_tokens=1000,
-                temperature=0.3
-            )
-            
-            answer_content = response.choices[0].message.content
+                "max_tokens": 1000,
+                "temperature": 0.3,
+                "thinking": {
+                    "type": "enabled"  # Enable GLM-4.5 thinking mode for better reasoning
+                }
+            }
+
+            response = await self.client.post("/chat/completions", json=payload)
+            response.raise_for_status()
+
+            response_data = response.json()
+            answer_content = response_data["choices"][0]["message"]["content"]
             confidence = self._calculate_confidence(search_results, answer_content)
-            
+
             return GeneratedAnswer(
                 content=answer_content,
                 confidence=confidence,
                 response_time=time.time() - start_time,
-                reasoning=f"Generated from {len(search_results)} sources"
+                reasoning=f"Generated from {len(search_results)} sources using GLM-4.5"
             )
             
         except Exception as e:
