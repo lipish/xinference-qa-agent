@@ -97,33 +97,117 @@ class SearchService:
 
         print(f"Created index with {len(all_docs)} documents")
     
+    def _get_search_keywords(self, query: str) -> List[str]:
+        """Extract and expand search keywords with Chinese-English mapping"""
+        # Chinese to English keyword mapping for Xinference
+        keyword_mapping = {
+            # Installation related
+            "安装": ["install", "installation", "setup"],
+            "部署": ["deploy", "deployment", "setup"],
+            "配置": ["config", "configuration", "configure"],
+            "启动": ["start", "launch", "run"],
+            "运行": ["run", "running", "execute"],
+
+            # Model related
+            "模型": ["model", "models"],
+            "大模型": ["llm", "large language model"],
+            "语言模型": ["language model", "llm"],
+            "嵌入模型": ["embedding", "embedding model"],
+            "图像模型": ["image", "image model"],
+            "多模态": ["multimodal", "multi-modal"],
+
+            # Technical terms
+            "推理": ["inference", "infer"],
+            "服务": ["service", "server", "serving"],
+            "客户端": ["client"],
+            "API": ["api"],
+            "接口": ["interface", "api"],
+            "后端": ["backend"],
+            "引擎": ["engine"],
+
+            # Common operations
+            "使用": ["use", "using", "usage"],
+            "如何": ["how", "how to"],
+            "什么": ["what", "what is"],
+            "为什么": ["why"],
+            "问题": ["problem", "issue", "error"],
+            "错误": ["error", "bug", "issue"],
+            "故障": ["troubleshoot", "problem", "issue"],
+
+            # Specific backends
+            "vllm": ["vllm"],
+            "transformers": ["transformers"],
+            "llama.cpp": ["llama.cpp", "llamacpp"],
+            "docker": ["docker"],
+            "kubernetes": ["kubernetes", "k8s"],
+        }
+
+        # Extract keywords from query
+        keywords = []
+        query_lower = query.lower()
+
+        # Add original query terms
+        original_terms = re.findall(r'\w+', query_lower)
+        keywords.extend(original_terms)
+
+        # Add mapped English terms for Chinese keywords
+        for chinese_term, english_terms in keyword_mapping.items():
+            if chinese_term in query_lower:
+                keywords.extend(english_terms)
+
+        # Add common Xinference terms if query seems related
+        xinference_terms = ["xinference", "xorbits", "inference"]
+        if any(term in query_lower for term in ["xinference", "推理", "模型", "安装", "部署"]):
+            keywords.extend(xinference_terms)
+
+        return list(set(keywords))  # Remove duplicates
+
     async def search_all_sources(self, query: str, max_results: int = 10) -> List[SearchResult]:
-        """Search across all sources using text matching"""
+        """Search across all sources using enhanced text matching with Chinese support"""
         if not self.documents:
             raise RuntimeError("Search service not initialized")
 
-        query_lower = query.lower()
+        # Get expanded keywords including Chinese-English mapping
+        search_keywords = self._get_search_keywords(query)
         results = []
 
         print(f"Searching {len(self.documents)} documents for: {query}")
+        print(f"Expanded keywords: {search_keywords}")
 
         for doc in self.documents:
-            # Simple text matching with more flexible search terms
-            search_terms = query_lower.split()
-            title_matches = sum(1 for term in search_terms if term in doc['title'].lower())
-            content_matches = sum(1 for term in search_terms if term in doc['content'].lower())
+            # Enhanced text matching with keyword expansion
+            title_lower = doc['title'].lower()
+            content_lower = doc['content'].lower()
 
-            if title_matches > 0 or content_matches > 0:
+            title_matches = sum(1 for keyword in search_keywords if keyword in title_lower)
+            content_matches = sum(1 for keyword in search_keywords if keyword in content_lower)
+
+            # Also check for partial matches and common patterns
+            partial_matches = 0
+            for keyword in search_keywords:
+                if len(keyword) > 3:  # Only check partial matches for longer keywords
+                    if any(keyword[:4] in text for text in [title_lower, content_lower]):
+                        partial_matches += 0.5
+
+            total_matches = title_matches + content_matches + partial_matches
+
+            if total_matches > 0:
                 # Calculate relevance score based on matches
                 score = 0.0
                 if title_matches > 0:
-                    score += 0.7 * (title_matches / len(search_terms))
+                    score += 0.7 * (title_matches / len(search_keywords))
                 if content_matches > 0:
-                    score += 0.3 * (content_matches / len(search_terms))
+                    score += 0.3 * (content_matches / len(search_keywords))
+                if partial_matches > 0:
+                    score += 0.1 * (partial_matches / len(search_keywords))
 
                 # Boost score for certain source types
                 if doc['source_type'] == SourceType.DOCUMENTATION.value:
                     score += 0.2
+
+                # Boost score for installation/setup related content
+                if any(term in content_lower for term in ["install", "setup", "getting started"]):
+                    score += 0.1
 
                 result = SearchResult(
                     title=doc['title'],
