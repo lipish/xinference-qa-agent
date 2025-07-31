@@ -64,7 +64,7 @@
   "home": {
     "hero": {
       "title": "询问任何关于 {{name}} 的问题",
-      "subtitle": "获取关于安装、部署、故障排除等方面的即时答案。由AI驱动，基于官方文档和社区知识。",
+      "subtitle": "基于官方文档的AI问答助手",
       "placeholder": "询问任何关于Xinference的问题..."
     },
     "features": {
