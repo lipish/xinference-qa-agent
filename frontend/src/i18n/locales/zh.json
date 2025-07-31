@@ -63,13 +63,13 @@
   },
   "home": {
     "hero": {
-      "title": "询问任何关于 {{name}} 的问题",
-      "subtitle": "基于官方文档的AI问答助手",
+      "title": "请输入您的问题",
+      "subtitle": "",
       "placeholder": "询问任何关于Xinference的问题..."
     },
     "features": {
-      "title": "我可以为您提供什么帮助？",
-      "subtitle": "探索常见主题或提出您自己的问题",
+      "title": "",
+      "subtitle": "",
       "installation": {
         "title": "安装与设置",
         "description": "获取安装和配置Xinference的帮助",
