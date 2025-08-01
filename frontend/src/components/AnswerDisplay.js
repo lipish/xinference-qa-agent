@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   ClipboardDocumentIcon,
@@ -127,6 +127,7 @@ const AnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [copied, setCopied] = useState(false);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const isFavorited = state.favorites.some(fav => fav.question === answer.question);
@@ -182,7 +183,18 @@ const AnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   };
 
   const handleBackToHome = () => {
-    console.log('Back to Home button clicked');
+    console.log('Back to Home button clicked, current path:', location.pathname);
+    // Clear answer state - same as new question
+    if (onClearAnswer) {
+      console.log('Calling onClearAnswer');
+      onClearAnswer();
+    } else {
+      console.log('Calling actions.clearResults');
+      actions.clearResults();
+    }
+
+    // Always navigate to home (this will clear the answer display)
+    console.log('Navigating to home page');
     navigate('/');
   };
 
