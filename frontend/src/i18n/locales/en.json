@@ -16,7 +16,8 @@
     "previous": "Previous",
     "search": "Search",
     "submit": "Submit",
-    "newQuestion": "New Question"
+    "newQuestion": "New Question",
+    "newConversation": "New Conversation"
   },
   "header": {
     "title": "FAQ",

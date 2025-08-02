@@ -16,7 +16,8 @@
     "previous": "上一步",
     "search": "搜索",
     "submit": "提交",
-    "newQuestion": "新问题"
+    "newQuestion": "新问题",
+    "newConversation": "新对话"
   },
   "header": {
     "title": "问答社区",

@@ -45,6 +45,7 @@ const FeatureCard = ({ icon: Icon, title, description, examples, onQuestionClick
 const HomePage = () => {
   const [currentAnswer, setCurrentAnswer] = useState(null);
   const [useAgentMode, setUseAgentMode] = useState(true); // Default to Agent mode
+  const [conversationHistory, setConversationHistory] = useState([]); // Multi-turn conversation
   const { state, actions } = useQuery();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -53,6 +54,7 @@ const HomePage = () => {
   useEffect(() => {
     if (state.searchResults.length === 0 && state.currentQuery === '') {
       setCurrentAnswer(null);
+      // Don't clear conversation history here - only clear on explicit action
     }
   }, [state.searchResults, state.currentQuery]);
 
@@ -61,9 +63,18 @@ const HomePage = () => {
     const questionText = typeof input === 'string' ? input : input.text;
     const files = typeof input === 'object' && input.files ? input.files : [];
 
-    // Immediately clear current state and show loading
-    setCurrentAnswer(null);
-    actions.clearResults();
+    // Add question to conversation history immediately
+    const newQuestion = {
+      id: Date.now(),
+      type: 'question',
+      content: questionText,
+      files: files.length > 0 ? files.map(f => ({ name: f.name, size: f.size, type: f.type })) : [],
+      timestamp: new Date().toISOString()
+    };
+
+    setConversationHistory(prev => [...prev, newQuestion]);
+
+    // Set loading state but don't clear current answer yet (for multi-turn)
     actions.setQuery(questionText);
     actions.setLoading(true);
 
@@ -74,7 +85,20 @@ const HomePage = () => {
       // For now, we'll just use the text. File handling can be added later
       const response = await apiService.askQuestion(questionText);
 
-      // Add to search history
+      // Add answer to conversation history
+      const newAnswer = {
+        id: Date.now() + 1,
+        type: 'answer',
+        content: response.answer,
+        confidence: response.confidence,
+        sources: response.sources || [],
+        response_time: response.response_time,
+        timestamp: new Date().toISOString()
+      };
+
+      setConversationHistory(prev => [...prev, newAnswer]);
+
+      // Add to global history
       actions.addToHistory({
         question: questionText,
         answer: response.answer,
@@ -86,6 +110,14 @@ const HomePage = () => {
       setCurrentAnswer(response);
       actions.setResults(response.sources || []);
     } catch (error) {
+      // Add error to conversation history
+      const errorAnswer = {
+        id: Date.now() + 1,
+        type: 'error',
+        content: error.message,
+        timestamp: new Date().toISOString()
+      };
+      setConversationHistory(prev => [...prev, errorAnswer]);
       actions.setError(error.message);
     } finally {
       actions.setLoading(false);
@@ -110,6 +142,12 @@ const HomePage = () => {
 
   const handleClearAnswer = () => {
     setCurrentAnswer(null);
+    actions.clearResults();
+  };
+
+  const handleNewConversation = () => {
+    setCurrentAnswer(null);
+    setConversationHistory([]);
     actions.clearResults();
   };
 
@@ -152,6 +190,150 @@ const HomePage = () => {
     }
   ];
 
+  // Show chat interface if there's conversation history or current answer
+  const showChatInterface = conversationHistory.length > 0 || currentAnswer || state.isLoading;
+
+  if (showChatInterface) {
+    return (
+      <div className="h-screen flex flex-col">
+        {/* Chat Messages Area - Scrollable */}
+        <div className="flex-1 overflow-y-auto pb-4">
+          <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+            {/* Conversation History */}
+            {conversationHistory.map((message) => (
+              <div key={message.id} className={`flex ${message.type === 'question' ? 'justify-end' : 'justify-start'}`}>
+                {message.type === 'question' ? (
+                  <div className="max-w-3xl bg-blue-600 text-white rounded-2xl px-4 py-3">
+                    <p className="text-sm">{message.content}</p>
+                    {message.files && message.files.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {message.files.map((file, idx) => (
+                          <span key={idx} className="text-xs bg-blue-500 rounded px-2 py-1">
+                            📎 {file.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : message.type === 'error' ? (
+                  <div className="max-w-3xl bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
+                    <p className="text-red-700 text-sm">{message.content}</p>
+                  </div>
+                ) : (
+                  <div className="max-w-3xl w-full">
+                    {useAgentMode ? (
+                      <AgentAnswerDisplay
+                        answer={{
+                          question: conversationHistory.find(m => m.id === message.id - 1)?.content || '',
+                          answer: message.content,
+                          confidence: message.confidence,
+                          sources: message.sources,
+                          response_time: message.response_time
+                        }}
+                        onFeedback={handleFeedback}
+                        onClearAnswer={null} // Don't show clear button in conversation
+                      />
+                    ) : (
+                      <AnswerDisplay
+                        answer={{
+                          question: conversationHistory.find(m => m.id === message.id - 1)?.content || '',
+                          answer: message.content,
+                          confidence: message.confidence,
+                          sources: message.sources,
+                          response_time: message.response_time
+                        }}
+                        onFeedback={handleFeedback}
+                        onClearAnswer={null} // Don't show clear button in conversation
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Loading State */}
+            {state.isLoading && (
+              <div className="flex justify-start">
+                <div className="max-w-3xl bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-6">
+                  <div className="flex items-center space-x-3">
+                    <LoadingSpinner />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {t('common.analyzing')}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {state.currentQuery && `"${state.currentQuery}"`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Fixed Input Area */}
+        <div className="border-t border-gray-200 bg-white">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            {/* Mode Toggle */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={handleNewConversation}
+                  className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                  <span>{t('common.newConversation', '新对话')}</span>
+                </button>
+                <span className="text-xs text-gray-500">
+                  {conversationHistory.filter(m => m.type === 'question').length} 轮对话
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-gray-600">{t('home.displayMode', '显示模式')}:</span>
+                <button
+                  onClick={() => setUseAgentMode(true)}
+                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                    useAgentMode
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  🤖 Agent
+                </button>
+                <button
+                  onClick={() => setUseAgentMode(false)}
+                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                    !useAgentMode
+                      ? 'bg-green-100 text-green-800'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  📄 经典
+                </button>
+              </div>
+            </div>
+
+            {/* Input */}
+            <QuestionInput
+              onSubmit={handleQuestionSubmit}
+              placeholder={t('home.hero.placeholder')}
+            />
+
+            {/* Error Display */}
+            {state.error && (
+              <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-red-700 text-sm">{state.error}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Default welcome interface
   return (
     <div className="max-w-7xl mx-auto space-y-12">
       {/* Search Section */}
@@ -172,77 +354,10 @@ const HomePage = () => {
         )}
       </div>
 
-      {/* Loading State */}
-      {state.isLoading && (
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <LoadingSpinner />
-              <div className="text-center">
-                <p className="text-lg font-medium text-gray-900 mb-2">
-                  {t('common.analyzing')}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {state.currentQuery && `"${state.currentQuery}"`}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Answer Display Mode Toggle */}
-      {currentAnswer && !state.isLoading && (
-        <div className="max-w-6xl mx-auto mb-4">
-          <div className="flex items-center justify-center space-x-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <span className="text-sm text-gray-600">{t('home.displayMode', '显示模式')}:</span>
-            <button
-              onClick={() => setUseAgentMode(true)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                useAgentMode
-                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <CogIcon className="w-4 h-4" />
-              <span>{t('home.agentMode', 'Agent 模式')}</span>
-            </button>
-            <button
-              onClick={() => setUseAgentMode(false)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                !useAgentMode
-                  ? 'bg-green-100 text-green-800 border border-green-200'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <DocumentTextIcon className="w-4 h-4" />
-              <span>{t('home.classicMode', '经典模式')}</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Answer Display */}
-      {currentAnswer && !state.isLoading && (
-        <div className="max-w-6xl mx-auto">
-          {useAgentMode ? (
-            <AgentAnswerDisplay
-              answer={currentAnswer}
-              onFeedback={handleFeedback}
-              onClearAnswer={handleClearAnswer}
-            />
-          ) : (
-            <AnswerDisplay
-              answer={currentAnswer}
-              onFeedback={handleFeedback}
-              onClearAnswer={handleClearAnswer}
-            />
-          )}
-        </div>
-      )}
 
       {/* Features Grid */}
-      {!currentAnswer && !state.isLoading && (
+      {!state.isLoading && (
         <div className="space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -262,7 +377,7 @@ const HomePage = () => {
       )}
 
       {/* Popular Questions */}
-      {state.popularQuestions.length > 0 && !currentAnswer && !state.isLoading && (
+      {state.popularQuestions.length > 0 && !state.isLoading && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             {t('home.popular.title')}
