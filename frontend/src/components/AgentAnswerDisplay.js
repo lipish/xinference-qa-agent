@@ -221,8 +221,11 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
     processSteps();
   }, [answer, isProcessing]);
 
-  const isFavorited = state.favorites.some(fav => fav.question === answer.question);
-  
+  // Check if this answer is favorited
+  useEffect(() => {
+    setIsFavorited(state.favorites.some(fav => fav.question === answer.question));
+  }, [state.favorites, answer.question]);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(answer.answer);
