@@ -45,6 +45,13 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Clear local answer when QueryContext is cleared
+  useEffect(() => {
+    if (state.searchResults.length === 0 && state.currentQuery === '') {
+      setCurrentAnswer(null);
+    }
+  }, [state.searchResults, state.currentQuery]);
+
   const handleQuestionSubmit = async (input) => {
     // Handle both string (legacy) and object (new) input formats
     const questionText = typeof input === 'string' ? input : input.text;

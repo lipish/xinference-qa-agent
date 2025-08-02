@@ -76,7 +76,9 @@ function queryReducer(state, action) {
     case 'CLEAR_RESULTS':
       return {
         ...state,
+        currentQuery: '',
         searchResults: [],
+        isLoading: false,
         error: null
       };
     
