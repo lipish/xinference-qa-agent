@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { StarIcon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useQuery } from '../contexts/QueryContext';
 
 const Header = () => {
   const { t } = useTranslation();
+  const { actions } = useQuery();
+  const navigate = useNavigate();
   const [starCount, setStarCount] = useState(null);
 
   useEffect(() => {
@@ -33,12 +36,23 @@ const Header = () => {
     return count.toString();
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    // Clear any current results and navigate to home
+    actions.clearResults();
+    navigate('/');
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
-          <Link to="/" className="flex items-center space-x-3">
+          <a
+            href="/"
+            onClick={handleLogoClick}
+            className="flex items-center space-x-3 cursor-pointer"
+          >
             <div className="flex items-center justify-center">
               <img
                 src="/logo.png"
@@ -51,7 +65,7 @@ const Header = () => {
                 {t('header.title')}
               </h1>
             </div>
-          </Link>
+          </a>
 
           {/* Simplified Navigation - Hidden for cleaner look */}
           <div className="hidden"></div>

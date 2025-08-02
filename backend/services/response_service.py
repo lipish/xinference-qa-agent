@@ -112,29 +112,63 @@ Guidelines:
 6. If the question is about an error, provide step-by-step troubleshooting
 7. Always prioritize official documentation over other sources
 8. Format your response in clear markdown with proper headings and code blocks
+9. **IMPORTANT: Always respond in the same language as the user's question. If the question is in Chinese, respond in Chinese. If the question is in English, respond in English.**
 
 Remember: Xinference supports multiple backends (vLLM, llama.cpp, Transformers, SGLang, MLX) and can run various types of models (LLM, embedding, image, audio, rerank, video)."""
     
+    def _detect_language(self, text: str) -> str:
+        """Detect if the text is primarily Chinese or English"""
+        chinese_chars = len([c for c in text if '\u4e00' <= c <= '\u9fff'])
+        total_chars = len([c for c in text if c.isalpha() or '\u4e00' <= c <= '\u9fff'])
+
+        if total_chars == 0:
+            return "en"
+
+        chinese_ratio = chinese_chars / total_chars
+        return "zh" if chinese_ratio > 0.3 else "en"
+
     def _create_prompt(self, question: str, context: str, user_context: Optional[str] = None) -> str:
         """Create the prompt for the AI model"""
-        prompt_parts = [
-            f"Question: {question}",
-            "",
-            "Context from Xinference documentation and issues:",
-            context
-        ]
-        
-        if user_context:
+        # Detect the language of the question
+        language = self._detect_language(question)
+
+        if language == "zh":
+            prompt_parts = [
+                f"问题: {question}",
+                "",
+                "来自Xinference文档和问题的上下文:",
+                context
+            ]
+
+            if user_context:
+                prompt_parts.extend([
+                    "",
+                    f"用户提供的额外上下文: {user_context}"
+                ])
+
             prompt_parts.extend([
                 "",
-                f"Additional context from user: {user_context}"
+                "请基于上述上下文提供有用的中文回答。如果上下文中没有足够的信息来完全回答问题，请说明并提供您能给出的指导。请用中文回答。"
             ])
-        
-        prompt_parts.extend([
-            "",
-            "Please provide a helpful answer based on the context above. If the context doesn't contain enough information to fully answer the question, say so and provide what guidance you can."
-        ])
-        
+        else:
+            prompt_parts = [
+                f"Question: {question}",
+                "",
+                "Context from Xinference documentation and issues:",
+                context
+            ]
+
+            if user_context:
+                prompt_parts.extend([
+                    "",
+                    f"Additional context from user: {user_context}"
+                ])
+
+            prompt_parts.extend([
+                "",
+                "Please provide a helpful answer in English based on the context above. If the context doesn't contain enough information to fully answer the question, say so and provide what guidance you can."
+            ])
+
         return "\n".join(prompt_parts)
     
     def _prepare_context(self, search_results: List[SearchResult]) -> str:
