@@ -2,6 +2,7 @@
   "common": {
     "loading": "Loading...",
     "searching": "Searching for answers...",
+    "analyzing": "Analyzing your question...",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",

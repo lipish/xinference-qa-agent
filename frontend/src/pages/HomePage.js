@@ -30,7 +30,7 @@ const FeatureCard = ({ icon: Icon, title, description, examples, onQuestionClick
         <button
           key={index}
           onClick={() => onQuestionClick(example)}
-          className="w-full text-left text-sm text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-700 rounded px-3 py-2 transition-colors cursor-pointer border border-transparent hover:border-primary-200"
+          className="w-full text-left text-sm text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-700 rounded px-3 py-2 transition-all duration-200 cursor-pointer border border-transparent hover:border-primary-200 active:bg-primary-100 active:scale-[0.98]"
         >
           "{example}"
         </button>
@@ -57,10 +57,14 @@ const HomePage = () => {
     const questionText = typeof input === 'string' ? input : input.text;
     const files = typeof input === 'object' && input.files ? input.files : [];
 
+    // Immediately clear current state and show loading
+    setCurrentAnswer(null);
+    actions.clearResults();
     actions.setQuery(questionText);
     actions.setLoading(true);
-    actions.clearResults();
-    setCurrentAnswer(null);
+
+    // Force a small delay to ensure UI updates are visible
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
       // For now, we'll just use the text. File handling can be added later
@@ -166,8 +170,20 @@ const HomePage = () => {
 
       {/* Loading State */}
       {state.isLoading && (
-        <div className="flex justify-center">
-          <LoadingSpinner />
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <LoadingSpinner />
+              <div className="text-center">
+                <p className="text-lg font-medium text-gray-900 mb-2">
+                  {t('common.analyzing')}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {state.currentQuery && `"${state.currentQuery}"`}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -213,7 +229,7 @@ const HomePage = () => {
               <button
                 key={index}
                 onClick={() => handleQuestionSubmit(item.question)}
-                className="text-left p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                className="text-left p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 active:bg-primary-100 active:scale-[0.98] active:border-primary-400"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-gray-900 font-medium">
