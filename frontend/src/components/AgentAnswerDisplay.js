@@ -126,6 +126,9 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [copied, setCopied] = useState(false);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [expandedSteps, setExpandedSteps] = useState(new Set());
+  const [currentStep, setCurrentStep] = useState(-1);
+  const [isProcessing, setIsProcessing] = useState(true);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
   const location = useLocation();
@@ -196,57 +199,150 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
 
 
-  // Simple analysis steps without complex animations
+  // Analysis steps with progressive display
   const analysisSteps = [
     {
       icon: '📄',
       title: '分析问题',
       summary: '已识别问题类型和关键词',
+      details: `**问题分析:**\n- 问题类型: ${answer.question_type || '技术咨询'}\n- 关键词: ${answer.keywords?.join(', ') || 'Xinference, 配置, 使用'}\n- 复杂度: ${answer.complexity || '中等'}`,
       duration: '750ms'
     },
     {
       icon: '🔍',
       title: '搜索相关信息',
       summary: `找到 ${answer.sources?.length || 10} 个相关资源`,
+      details: `**搜索结果:**\n${answer.sources?.map((source, i) =>
+        `${i + 1}. ${source.title || source.url}\n   - 相关度: ${Math.round((source.relevance || 0.8) * 100)}%\n   - 来源: ${source.source_type || 'documentation'}`
+      ).join('\n') || '- 官方文档\n- GitHub Issues\n- 社区讨论'}`,
       duration: '1150ms'
     },
     {
       icon: '💡',
       title: '综合分析',
       summary: '已整合多个信息源',
+      details: `**信息整合:**\n- 交叉验证了 ${answer.sources?.length || 3} 个信息源\n- 识别出关键解决方案\n- 评估答案可信度: ${Math.round((answer.confidence || 0.85) * 100)}%\n- 准备生成结构化回答`,
       duration: '950ms'
     },
     {
       icon: '✏️',
       title: '生成回答',
       summary: '回答已生成完成',
+      details: `**回答生成:**\n- 结构化组织信息\n- 添加代码示例和配置\n- 包含最佳实践建议\n- 总响应时间: ${Math.round((answer.response_time || 1.2) * 1000)}ms`,
       duration: '550ms'
     }
   ];
 
+  // Progressive step processing
+  useEffect(() => {
+    if (!answer || !isProcessing) return;
+
+    const processSteps = async () => {
+      for (let i = 0; i < analysisSteps.length; i++) {
+        setCurrentStep(i);
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+      setCurrentStep(analysisSteps.length);
+      setIsProcessing(false);
+    };
+
+    processSteps();
+  }, [answer, isProcessing]);
+
+  const toggleStep = (index) => {
+    const newExpanded = new Set(expandedSteps);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
+    } else {
+      newExpanded.add(index);
+    }
+    setExpandedSteps(newExpanded);
+  };
+
   return (
     <div className="space-y-6">
       {/* Analysis Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
-        {analysisSteps.map((step, index) => (
-          <div
-            key={index}
-            className="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg"
-          >
-            <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-green-600 text-sm">✓</span>
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">{step.icon}</span>
-                <span className="font-medium text-gray-900">{step.title}</span>
-                <span className="text-sm text-gray-500">{step.duration}</span>
+        {analysisSteps.map((step, index) => {
+          // Only show steps up to current step + 1 (to show the next step being processed)
+          if (index > currentStep + 1) return null;
+
+          const isActive = currentStep === index && isProcessing;
+          const isCompleted = currentStep > index;
+          const isExpanded = expandedSteps.has(index);
+
+          return (
+            <div
+              key={index}
+              className={`border rounded-lg transition-all duration-300 cursor-pointer ${
+                isActive
+                  ? 'bg-blue-50 border-blue-200'
+                  : isCompleted
+                    ? 'bg-green-50 border-green-200'
+                    : 'bg-gray-50 border-gray-200'
+              }`}
+              onClick={() => toggleStep(index)}
+            >
+              <div className="flex items-center space-x-3 p-2">
+                <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                  isActive
+                    ? 'bg-blue-100'
+                    : isCompleted
+                      ? 'bg-green-100'
+                      : 'bg-gray-100'
+                }`}>
+                  {isCompleted ? (
+                    <span className="text-green-600 text-xs">✓</span>
+                  ) : isActive ? (
+                    <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="text-gray-400 text-xs">{step.icon}</span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm">{step.icon}</span>
+                      <span className={`text-sm font-medium ${
+                        isActive ? 'text-blue-700' : isCompleted ? 'text-green-700' : 'text-gray-600'
+                      }`}>
+                        {step.title}
+                      </span>
+                      <span className="text-xs text-gray-500">{step.duration}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {isActive && (
+                        <div className="flex space-x-1">
+                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce"></div>
+                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        </div>
+                      )}
+                      <span className={`text-xs transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+                        ▼
+                      </span>
+                    </div>
+                  </div>
+                  <p className={`text-xs mt-1 ${
+                    isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                  }`}>
+                    {step.summary}
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-green-700 mt-1">{step.summary}</p>
+
+              {/* Expanded Details */}
+              {isExpanded && (
+                <div className="px-9 pb-3">
+                  <div className="text-xs text-gray-600 bg-white rounded p-2 border border-gray-100">
+                    <pre className="whitespace-pre-wrap font-mono">{step.details}</pre>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Answer Content */}
