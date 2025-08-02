@@ -58,7 +58,7 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
     }`}>
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-opacity-80 transition-colors"
+        className="w-full flex items-center justify-between p-3 text-left hover:bg-opacity-80 transition-colors"
       >
         <div className="flex items-center space-x-3">
           <StepIcon type={step.type} isActive={isActive} isCompleted={isCompleted} />
@@ -88,7 +88,7 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
       </button>
       
       {isExpanded && step.details && (
-        <div className="px-4 pb-4 border-t border-gray-200 bg-white">
+        <div className="px-3 pb-3 border-t border-gray-200 bg-white">
           <div className="mt-3 prose prose-sm max-w-none">
             <ReactMarkdown
               components={{

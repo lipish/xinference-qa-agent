@@ -45,7 +45,7 @@ const FeatureCard = ({ icon: Icon, title, description, examples, onQuestionClick
 
 const HomePage = () => {
   const [currentAnswer, setCurrentAnswer] = useState(null);
-  const [useAgentMode, setUseAgentMode] = useState(true); // Default to Agent mode
+  // Always use Agent mode - no toggle needed
   const [conversationHistory, setConversationHistory] = useState([]); // Multi-turn conversation
   const { state, actions } = useQuery();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const HomePage = () => {
   useEffect(() => {
     if (state.searchResults.length === 0 && state.currentQuery === '') {
       setCurrentAnswer(null);
-      // Don't clear conversation history here - only clear on explicit action
+      setConversationHistory([]); // Clear conversation when navigating back to home
     }
   }, [state.searchResults, state.currentQuery]);
 
@@ -152,6 +152,13 @@ const HomePage = () => {
     actions.clearResults();
   };
 
+  const handleBackToHome = () => {
+    setCurrentAnswer(null);
+    setConversationHistory([]);
+    actions.clearResults();
+    // This will trigger the welcome interface to show
+  };
+
   const features = [
     {
       icon: BookOpenIcon,
@@ -198,7 +205,7 @@ const HomePage = () => {
     return (
       <div className="h-screen flex flex-col">
         {/* Chat Messages Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto pb-4">
+        <div className="flex-1 overflow-y-auto pb-4" style={{ paddingBottom: '120px' }}>
           <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
             {/* Conversation History */}
             {conversationHistory.map((message) => (
@@ -222,31 +229,17 @@ const HomePage = () => {
                   </div>
                 ) : (
                   <div className="max-w-3xl w-full">
-                    {useAgentMode ? (
-                      <AgentAnswerDisplay
-                        answer={{
-                          question: conversationHistory.find(m => m.id === message.id - 1)?.content || '',
-                          answer: message.content,
-                          confidence: message.confidence,
-                          sources: message.sources,
-                          response_time: message.response_time
-                        }}
-                        onFeedback={handleFeedback}
-                        onClearAnswer={null} // Don't show clear button in conversation
-                      />
-                    ) : (
-                      <AnswerDisplay
-                        answer={{
-                          question: conversationHistory.find(m => m.id === message.id - 1)?.content || '',
-                          answer: message.content,
-                          confidence: message.confidence,
-                          sources: message.sources,
-                          response_time: message.response_time
-                        }}
-                        onFeedback={handleFeedback}
-                        onClearAnswer={null} // Don't show clear button in conversation
-                      />
-                    )}
+                    <AgentAnswerDisplay
+                      answer={{
+                        question: conversationHistory.find(m => m.id === message.id - 1)?.content || '',
+                        answer: message.content,
+                        confidence: message.confidence,
+                        sources: message.sources,
+                        response_time: message.response_time
+                      }}
+                      onFeedback={handleFeedback}
+                      onClearAnswer={handleBackToHome} // Enable navigation back to home
+                    />
                   </div>
                 )}
               </div>
@@ -254,15 +247,15 @@ const HomePage = () => {
 
             {/* Loading State */}
             {state.isLoading && (
-              <div className="flex justify-start">
-                <div className="max-w-3xl bg-white rounded-2xl shadow-sm border border-gray-200 px-4 py-6">
-                  <div className="flex items-center space-x-3">
+              <div className="flex justify-center">
+                <div className="max-w-2xl w-full bg-white rounded-2xl shadow-sm border border-gray-200 px-6 py-4">
+                  <div className="flex items-center justify-center space-x-3">
                     <LoadingSpinner />
-                    <div>
+                    <div className="text-center">
                       <p className="text-sm font-medium text-gray-900">
                         {t('common.analyzing')}
                       </p>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-gray-600 mt-1">
                         {state.currentQuery && `"${state.currentQuery}"`}
                       </p>
                     </div>
@@ -274,10 +267,10 @@ const HomePage = () => {
         </div>
 
         {/* Fixed Input Area */}
-        <div className="border-t border-gray-200 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white shadow-lg">
           <div className="max-w-4xl mx-auto px-4 py-4">
-            {/* Mode Toggle */}
-            <div className="flex items-center justify-between mb-4">
+            {/* Conversation Controls */}
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handleNewConversation}
@@ -292,27 +285,7 @@ const HomePage = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-600">{t('home.displayMode', '显示模式')}:</span>
-                <button
-                  onClick={() => setUseAgentMode(true)}
-                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                    useAgentMode
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  🤖 Agent
-                </button>
-                <button
-                  onClick={() => setUseAgentMode(false)}
-                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                    !useAgentMode
-                      ? 'bg-green-100 text-green-800'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  📄 经典
-                </button>
+                <span className="text-xs text-blue-600 font-medium">🤖 Agent 模式</span>
               </div>
             </div>
 
