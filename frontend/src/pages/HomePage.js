@@ -272,29 +272,31 @@ const HomePage = () => {
           <div className="max-w-4xl mx-auto px-4 py-4">
             {/* Input with Navigation Controls */}
             <div className="flex items-center space-x-3">
-              {/* Navigation Buttons */}
-              <button
-                onClick={handleBackToHome}
-                className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm whitespace-nowrap"
-              >
-                <HomeIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('common.back', '返回主页')}</span>
-              </button>
-
-              <button
-                onClick={handleNewConversation}
-                className="flex items-center space-x-1 px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm whitespace-nowrap"
-              >
-                <PlusIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('common.newQuestion', '新问题')}</span>
-              </button>
-
-              {/* Input - takes remaining space */}
+              {/* Input - takes most space */}
               <div className="flex-1">
                 <QuestionInput
                   onSubmit={handleQuestionSubmit}
                   placeholder={t('home.hero.placeholder')}
                 />
+              </div>
+
+              {/* Navigation Buttons - stacked vertically */}
+              <div className="flex flex-col space-y-2">
+                <button
+                  onClick={handleBackToHome}
+                  className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm whitespace-nowrap"
+                >
+                  <HomeIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{t('common.back', '返回主页')}</span>
+                </button>
+
+                <button
+                  onClick={handleNewConversation}
+                  className="flex items-center space-x-1 px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm whitespace-nowrap"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{t('common.newQuestion', '新问题')}</span>
+                </button>
               </div>
             </div>
 
