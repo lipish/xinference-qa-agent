@@ -353,7 +353,6 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
             </div>
           )}
         </div>
-      )}
 
       {/* Sources Modal */}
       {showSourcesModal && (
@@ -432,7 +431,8 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
               </div>
             </div>
           </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
