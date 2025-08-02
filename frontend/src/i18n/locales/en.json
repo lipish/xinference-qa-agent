@@ -64,6 +64,13 @@
       "passwordTooShort": "Password must be at least 6 characters"
     }
   },
+  "input": {
+    "tools": {
+      "image": "Upload Image",
+      "document": "Upload Document",
+      "log": "Upload Log File"
+    }
+  },
   "home": {
     "hero": {
       "title": "Ask anything about {{name}}",

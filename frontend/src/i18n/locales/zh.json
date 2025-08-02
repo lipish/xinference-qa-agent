@@ -64,6 +64,13 @@
       "passwordTooShort": "密码至少需要6个字符"
     }
   },
+  "input": {
+    "tools": {
+      "image": "上传图片",
+      "document": "上传文档",
+      "log": "上传日志文件"
+    }
+  },
   "home": {
     "hero": {
       "title": "请输入您的问题",

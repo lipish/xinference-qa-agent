@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import {
   PaperAirplaneIcon,
   XMarkIcon,
-  PlusIcon,
   PhotoIcon,
   DocumentIcon,
-  MicrophoneIcon
+  CodeBracketIcon
 } from '@heroicons/react/24/outline';
 import { useQuery } from '../contexts/QueryContext';
 import { translatePopularQuestion } from '../utils/translationUtils';
@@ -17,7 +16,9 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const textareaRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const documentInputRef = useRef(null);
+  const logInputRef = useRef(null);
   const { state, actions } = useQuery();
   const { t } = useTranslation();
   
@@ -67,9 +68,34 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
     }
   };
 
-  const handleFileSelect = (e) => {
+  const handleImageSelect = (e) => {
     const files = Array.from(e.target.files);
-    handleFiles(files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    handleFiles(imageFiles);
+    e.target.value = ''; // Reset input
+  };
+
+  const handleDocumentSelect = (e) => {
+    const files = Array.from(e.target.files);
+    const documentFiles = files.filter(file =>
+      file.type === 'application/pdf' ||
+      file.type === 'text/plain' ||
+      file.name.endsWith('.txt') ||
+      file.name.endsWith('.md')
+    );
+    handleFiles(documentFiles);
+    e.target.value = ''; // Reset input
+  };
+
+  const handleLogSelect = (e) => {
+    const files = Array.from(e.target.files);
+    const logFiles = files.filter(file =>
+      file.type === 'application/json' ||
+      file.name.endsWith('.json') ||
+      file.name.endsWith('.log')
+    );
+    handleFiles(logFiles);
+    e.target.value = ''; // Reset input
   };
 
   const handleFiles = (files) => {
@@ -177,23 +203,41 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
           {uploadedFiles.length > 0 && (
             <div className="p-4 border-b border-gray-100">
               <div className="flex flex-wrap gap-2">
-                {uploadedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 rounded-xl px-3 py-2 text-sm border border-gray-200 transition-colors">
-                    {file.type.startsWith('image/') ? (
-                      <PhotoIcon className="h-4 w-4 text-blue-500 flex-shrink-0" />
-                    ) : (
-                      <DocumentIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                    )}
-                    <span className="truncate max-w-32 text-gray-700">{file.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeFile(index)}
-                      className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 ml-1"
-                    >
-                      <XMarkIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
+                {uploadedFiles.map((file, index) => {
+                  const getFileIcon = () => {
+                    if (file.type.startsWith('image/')) {
+                      return <PhotoIcon className="h-4 w-4 text-blue-500 flex-shrink-0" />;
+                    } else if (file.type === 'application/json' || file.name.endsWith('.json') || file.name.endsWith('.log')) {
+                      return <CodeBracketIcon className="h-4 w-4 text-purple-500 flex-shrink-0" />;
+                    } else {
+                      return <DocumentIcon className="h-4 w-4 text-green-500 flex-shrink-0" />;
+                    }
+                  };
+
+                  const getBgColor = () => {
+                    if (file.type.startsWith('image/')) {
+                      return 'bg-blue-50 hover:bg-blue-100 border-blue-200';
+                    } else if (file.type === 'application/json' || file.name.endsWith('.json') || file.name.endsWith('.log')) {
+                      return 'bg-purple-50 hover:bg-purple-100 border-purple-200';
+                    } else {
+                      return 'bg-green-50 hover:bg-green-100 border-green-200';
+                    }
+                  };
+
+                  return (
+                    <div key={index} className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm border transition-colors ${getBgColor()}`}>
+                      {getFileIcon()}
+                      <span className="truncate max-w-32 text-gray-700">{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 ml-1"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -217,22 +261,12 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
             {/* Bottom Toolbar */}
             <div className="flex items-center justify-between px-4 pb-3 pt-1">
               <div className="flex items-center gap-1">
-                {/* Add Button */}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-                  title="上传文件"
-                >
-                  <PlusIcon className="h-5 w-5" />
-                </button>
-
                 {/* Image Upload */}
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-                  title="上传图片"
+                  onClick={() => imageInputRef.current?.click()}
+                  className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                  title={t('input.tools.image')}
                 >
                   <PhotoIcon className="h-5 w-5" />
                 </button>
@@ -240,21 +274,21 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                 {/* Document Upload */}
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-                  title="上传文档"
+                  onClick={() => documentInputRef.current?.click()}
+                  className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                  title={t('input.tools.document')}
                 >
                   <DocumentIcon className="h-5 w-5" />
                 </button>
 
-                {/* Voice Input (placeholder) */}
+                {/* Log/JSON Upload */}
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all opacity-50 cursor-not-allowed"
-                  title="语音输入（即将推出）"
-                  disabled
+                  onClick={() => logInputRef.current?.click()}
+                  className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                  title={t('input.tools.log')}
                 >
-                  <MicrophoneIcon className="h-5 w-5" />
+                  <CodeBracketIcon className="h-5 w-5" />
                 </button>
               </div>
 
@@ -273,13 +307,29 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
             </div>
           </div>
 
-          {/* Hidden File Input */}
+          {/* Hidden File Inputs */}
           <input
-            ref={fileInputRef}
+            ref={imageInputRef}
             type="file"
             multiple
-            accept="image/*,.pdf,.txt,.log,.json"
-            onChange={handleFileSelect}
+            accept="image/*"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+          <input
+            ref={documentInputRef}
+            type="file"
+            multiple
+            accept=".pdf,.txt,.md,.doc,.docx"
+            onChange={handleDocumentSelect}
+            className="hidden"
+          />
+          <input
+            ref={logInputRef}
+            type="file"
+            multiple
+            accept=".json,.log"
+            onChange={handleLogSelect}
             className="hidden"
           />
         </div>
