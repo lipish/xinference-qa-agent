@@ -248,20 +248,11 @@ const HomePage = () => {
 
             {/* Loading State */}
             {state.isLoading && (
-              <div className="flex justify-center">
-                <div className="max-w-2xl w-full bg-white rounded-2xl shadow-sm border border-gray-200 px-6 py-4">
-                  <div className="flex items-center justify-center space-x-3">
-                    <LoadingSpinner />
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-gray-900">
-                        {t('common.analyzing')}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {state.currentQuery && `"${state.currentQuery}"`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex justify-center px-4">
+                <LoadingSpinner
+                  type="analysis"
+                  question={state.currentQuery}
+                />
               </div>
             )}
           </div>
