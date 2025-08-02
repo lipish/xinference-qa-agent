@@ -388,6 +388,51 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
             </ReactMarkdown>
           </div>
           
+          {/* Sources List */}
+          {answer.sources && answer.sources.length > 0 && (
+            <div className="mt-6 pt-4 border-t border-gray-100">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                📚 参考资料 ({answer.sources.length})
+              </h4>
+              <div className="space-y-2">
+                {answer.sources.slice(0, 5).map((source, index) => (
+                  <div key={index} className="flex items-start space-x-2 text-sm">
+                    <span className="text-gray-400 mt-0.5">•</span>
+                    <div className="flex-1">
+                      <span className="text-gray-700">{source.title || source.url || `数据源 ${index + 1}`}</span>
+                      <div className="flex items-center space-x-3 mt-1">
+                        <span className="text-xs text-gray-500">
+                          相关度: {Math.round((source.relevance_score || 0.8) * 100)}%
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          类型: {source.source_type || 'documentation'}
+                        </span>
+                        {source.url && (
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:text-blue-800 underline"
+                          >
+                            查看原文
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {answer.sources.length > 5 && (
+                  <button
+                    onClick={() => setShowSourcesModal(true)}
+                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    查看全部 {answer.sources.length} 个数据源
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Feedback */}
           {onFeedback && (
             <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
@@ -399,7 +444,7 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
                   总用时: {Math.round((answer.response_time || 1.2) * 1000)}ms
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-500">{t('answer.wasThisHelpful')}</span>
                 <button
