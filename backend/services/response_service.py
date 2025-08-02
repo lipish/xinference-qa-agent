@@ -112,20 +112,31 @@ Guidelines:
 6. If the question is about an error, provide step-by-step troubleshooting
 7. Always prioritize official documentation over other sources
 8. Format your response in clear markdown with proper headings and code blocks
-9. **IMPORTANT: Always respond in the same language as the user's question. If the question is in Chinese, respond in Chinese. If the question is in English, respond in English.**
+
+**CRITICAL LANGUAGE REQUIREMENT:**
+- If the user's question is in Chinese (contains Chinese characters), you MUST respond entirely in Chinese
+- If the user's question is in English, you MUST respond entirely in English
+- Never mix languages in your response
+- This is a strict requirement - always match the user's language exactly
 
 Remember: Xinference supports multiple backends (vLLM, llama.cpp, Transformers, SGLang, MLX) and can run various types of models (LLM, embedding, image, audio, rerank, video)."""
     
     def _detect_language(self, text: str) -> str:
         """Detect if the text is primarily Chinese or English"""
+        # Count Chinese characters (CJK Unified Ideographs)
         chinese_chars = len([c for c in text if '\u4e00' <= c <= '\u9fff'])
+
+        # Count all meaningful characters (letters and Chinese characters)
         total_chars = len([c for c in text if c.isalpha() or '\u4e00' <= c <= '\u9fff'])
 
         if total_chars == 0:
             return "en"
 
         chinese_ratio = chinese_chars / total_chars
-        return "zh" if chinese_ratio > 0.3 else "en"
+
+        # Lower threshold for Chinese detection to be more sensitive
+        # If there are any Chinese characters (>10% of meaningful text), treat as Chinese
+        return "zh" if chinese_ratio > 0.1 else "en"
 
     def _create_prompt(self, question: str, context: str, user_context: Optional[str] = None) -> str:
         """Create the prompt for the AI model"""
@@ -148,7 +159,9 @@ Remember: Xinference supports multiple backends (vLLM, llama.cpp, Transformers, 
 
             prompt_parts.extend([
                 "",
-                "请基于上述上下文提供有用的中文回答。如果上下文中没有足够的信息来完全回答问题，请说明并提供您能给出的指导。请用中文回答。"
+                "请基于上述上下文提供有用的中文回答。如果上下文中没有足够的信息来完全回答问题，请说明并提供您能给出的指导。",
+                "",
+                "重要提醒：请务必用中文回答，不要使用英文。整个回答都必须是中文。"
             ])
         else:
             prompt_parts = [
@@ -166,7 +179,9 @@ Remember: Xinference supports multiple backends (vLLM, llama.cpp, Transformers, 
 
             prompt_parts.extend([
                 "",
-                "Please provide a helpful answer in English based on the context above. If the context doesn't contain enough information to fully answer the question, say so and provide what guidance you can."
+                "Please provide a helpful answer in English based on the context above. If the context doesn't contain enough information to fully answer the question, say so and provide what guidance you can.",
+                "",
+                "IMPORTANT: Please respond entirely in English. Do not use Chinese characters in your response."
             ])
 
         return "\n".join(prompt_parts)
