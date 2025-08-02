@@ -270,30 +270,33 @@ const HomePage = () => {
         {/* Fixed Input Area */}
         <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white shadow-lg">
           <div className="max-w-4xl mx-auto px-4 py-4">
-            {/* Navigation Controls */}
-            <div className="flex items-center justify-center space-x-4 mb-3">
+            {/* Input with Navigation Controls */}
+            <div className="flex items-center space-x-3">
+              {/* Navigation Buttons */}
               <button
                 onClick={handleBackToHome}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm whitespace-nowrap"
               >
                 <HomeIcon className="w-4 h-4" />
-                <span>{t('common.back', '返回主页')}</span>
+                <span className="hidden sm:inline">{t('common.back', '返回主页')}</span>
               </button>
 
               <button
                 onClick={handleNewConversation}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm"
+                className="flex items-center space-x-1 px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm whitespace-nowrap"
               >
                 <PlusIcon className="w-4 h-4" />
-                <span>{t('common.newQuestion', '新问题')}</span>
+                <span className="hidden sm:inline">{t('common.newQuestion', '新问题')}</span>
               </button>
-            </div>
 
-            {/* Input */}
-            <QuestionInput
-              onSubmit={handleQuestionSubmit}
-              placeholder={t('home.hero.placeholder')}
-            />
+              {/* Input - takes remaining space */}
+              <div className="flex-1">
+                <QuestionInput
+                  onSubmit={handleQuestionSubmit}
+                  placeholder={t('home.hero.placeholder')}
+                />
+              </div>
+            </div>
 
             {/* Error Display */}
             {state.error && (
