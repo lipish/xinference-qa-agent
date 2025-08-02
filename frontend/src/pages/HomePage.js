@@ -247,7 +247,8 @@ const HomePage = () => {
             {state.isLoading && (
               <div className="flex justify-center px-4">
                 <LoadingSpinner
-                  type="analysis"
+                  type="simple"
+                  text="正在搜索答案..."
                   question={state.currentQuery}
                 />
               </div>

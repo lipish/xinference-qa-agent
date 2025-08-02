@@ -128,7 +128,7 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [expandedSteps, setExpandedSteps] = useState(new Set());
   const [currentStep, setCurrentStep] = useState(-1);
-  const [isProcessing, setIsProcessing] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
   const location = useLocation();
@@ -235,19 +235,26 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
   // Progressive step processing
   useEffect(() => {
-    if (!answer || !isProcessing) return;
+    if (!answer) return;
 
-    const processSteps = async () => {
+    // Start processing after a short delay to avoid flickering
+    const startProcessing = async () => {
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      if (!answer) return; // Check again after delay
+
+      setIsProcessing(true);
+
       for (let i = 0; i < analysisSteps.length; i++) {
         setCurrentStep(i);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 600));
       }
       setCurrentStep(analysisSteps.length);
       setIsProcessing(false);
     };
 
-    processSteps();
-  }, [answer, isProcessing]);
+    startProcessing();
+  }, [answer]);
 
   const toggleStep = (index) => {
     const newExpanded = new Set(expandedSteps);
