@@ -18,7 +18,9 @@ import {
   CogIcon,
   DocumentMagnifyingGlassIcon,
   LightBulbIcon,
-  PencilSquareIcon
+  PencilSquareIcon,
+  DocumentTextIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '../contexts/QueryContext';
@@ -125,6 +127,8 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [expandedSteps, setExpandedSteps] = useState(new Set());
   const [isProcessing, setIsProcessing] = useState(true);
+  const [showSourcesModal, setShowSourcesModal] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
   const location = useLocation();
@@ -323,6 +327,13 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
             </h3>
             <div className="flex items-center space-x-2 ml-4">
               <button
+                onClick={() => setShowSourcesModal(true)}
+                className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                title="查看数据源"
+              >
+                <DocumentTextIcon className="w-5 h-5" />
+              </button>
+              <button
                 onClick={handleCopy}
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                 title="Copy answer"
@@ -409,6 +420,86 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Sources Modal */}
+      {showSourcesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">
+                📚 数据源 ({answer.sources?.length || 0})
+              </h3>
+              <button
+                onClick={() => setShowSourcesModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-4 overflow-y-auto max-h-[60vh]">
+              {answer.sources && answer.sources.length > 0 ? (
+                <div className="space-y-3">
+                  {answer.sources.map((source, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-sm mb-1">
+                            {source.title || source.url || `数据源 ${index + 1}`}
+                          </h4>
+                          <p className="text-xs text-gray-600 mb-2">
+                            {source.description || source.content?.substring(0, 100) + '...' || '相关内容'}
+                          </p>
+                          <div className="flex items-center space-x-4 text-xs text-gray-500">
+                            <span className="flex items-center">
+                              📊 相关度: {Math.round((source.relevance || 0.8) * 100)}%
+                            </span>
+                            <span className="flex items-center">
+                              🏷️ 类型: {source.source_type || 'documentation'}
+                            </span>
+                            {source.url && (
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline"
+                              >
+                                🔗 查看原文
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <DocumentTextIcon className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p>暂无数据源信息</p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t border-gray-200 p-4 bg-gray-50">
+              <div className="flex items-center justify-between text-sm text-gray-600">
+                <span>
+                  💡 这些数据源用于生成上述回答
+                </span>
+                <button
+                  onClick={() => setShowSourcesModal(false)}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 transition-colors"
+                >
+                  关闭
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
