@@ -16,7 +16,8 @@ import {
   CloudIcon,
   CommandLineIcon,
   CogIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline';
 
 const FeatureCard = ({ icon: Icon, title, description, examples, onQuestionClick }) => (
