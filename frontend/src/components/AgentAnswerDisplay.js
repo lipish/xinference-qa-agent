@@ -194,15 +194,7 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
     navigate('/');
   };
 
-  const toggleStep = (index) => {
-    const newExpanded = new Set(expandedSteps);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
-    } else {
-      newExpanded.add(index);
-    }
-    setExpandedSteps(newExpanded);
-  };
+
 
   return (
     <div className="space-y-6">
