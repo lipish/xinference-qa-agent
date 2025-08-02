@@ -334,9 +334,13 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
               {/* Expanded Details */}
               {isExpanded && (
-                <div className="px-9 pb-3">
-                  <div className="text-xs text-gray-600 bg-white rounded p-2 border border-gray-100">
-                    <pre className="whitespace-pre-wrap font-mono">{step.details}</pre>
+                <div className="mt-3 mx-3 mb-3">
+                  <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="prose prose-sm max-w-none text-gray-700">
+                      <div className="whitespace-pre-line text-sm leading-relaxed">
+                        {step.details}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
