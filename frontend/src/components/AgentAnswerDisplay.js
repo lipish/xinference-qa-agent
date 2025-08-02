@@ -123,26 +123,24 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
   );
 };
 
-const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
+const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer, isLoading = false, currentQuery = '' }) => {
   const [copied, setCopied] = useState(false);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [expandedSteps, setExpandedSteps] = useState(new Set());
-  const [currentStep, setCurrentStep] = useState(-1);
-  const [isProcessing, setIsProcessing] = useState(false);
   const { state, actions } = useQuery();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
 
-
-
   // Check if this answer is favorited
   useEffect(() => {
-    setIsFavorited(state.favorites.some(fav => fav.question === answer.question));
-  }, [state.favorites, answer.question]);
+    if (answer) {
+      setIsFavorited(state.favorites.some(fav => fav.question === answer.question));
+    }
+  }, [state.favorites, answer?.question]);
 
   const handleCopy = async () => {
+    if (!answer) return;
     try {
       await navigator.clipboard.writeText(answer.answer);
       setCopied(true);
@@ -151,8 +149,9 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
       console.error('Failed to copy:', error);
     }
   };
-  
+
   const handleFavorite = () => {
+    if (!answer) return;
     if (isFavorited) {
       actions.removeFromFavorites(answer.question);
     } else {
@@ -163,8 +162,9 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
       });
     }
   };
-  
+
   const handleShare = async () => {
+    if (!answer) return;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -200,136 +200,32 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
 
 
-  // Analysis steps with progressive display
-  const analysisSteps = [
-    {
-      icon: '📄',
-      title: '分析问题',
-      summary: '已识别问题类型和关键词',
-      details: `**问题分析:**\n- 问题类型: ${answer.question_type || '技术咨询'}\n- 关键词: ${answer.keywords?.join(', ') || 'Xinference, 配置, 使用'}\n- 复杂度: ${answer.complexity || '中等'}`,
-      duration: '750ms'
-    },
-    {
-      icon: '🔍',
-      title: '搜索相关信息',
-      summary: `找到 ${answer.sources?.length || 10} 个相关资源`,
-      details: `**搜索结果:**\n${answer.sources?.map((source, i) =>
-        `${i + 1}. ${source.title || source.url}\n   - 相关度: ${Math.round((source.relevance || 0.8) * 100)}%\n   - 来源: ${source.source_type || 'documentation'}`
-      ).join('\n') || '- 官方文档\n- GitHub Issues\n- 社区讨论'}`,
-      duration: '1150ms'
-    },
-    {
-      icon: '💡',
-      title: '综合分析',
-      summary: '已整合多个信息源',
-      details: `**信息整合:**\n- 交叉验证了 ${answer.sources?.length || 3} 个信息源\n- 识别出关键解决方案\n- 评估答案可信度: ${Math.round((answer.confidence || 0.85) * 100)}%\n- 准备生成结构化回答`,
-      duration: '950ms'
-    },
-    {
-      icon: '✏️',
-      title: '生成回答',
-      summary: '回答已生成完成',
-      details: `**回答生成:**\n- 结构化组织信息\n- 添加代码示例和配置\n- 包含最佳实践建议\n- 总响应时间: ${Math.round((answer.response_time || 1.2) * 1000)}ms`,
-      duration: '550ms'
-    }
-  ];
 
-  // Initialize all steps as completed to avoid flickering
-  useEffect(() => {
-    if (!answer) return;
 
-    // Show all steps as completed immediately to prevent flickering
-    setCurrentStep(analysisSteps.length);
-    setIsProcessing(false);
-  }, [answer]);
 
-  const toggleStep = (index) => {
-    const newExpanded = new Set(expandedSteps);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
-    } else {
-      newExpanded.add(index);
-    }
-    setExpandedSteps(newExpanded);
-  };
 
   return (
     <div className="space-y-6">
-      {/* Analysis Steps */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
-        {analysisSteps.map((step, index) => {
-          // Show all steps as completed to avoid flickering
-          const isActive = false;
-          const isCompleted = true;
-          const isExpanded = expandedSteps.has(index);
-
-          return (
-            <div
-              key={index}
-              className="bg-green-50 border border-green-200 rounded-lg transition-all duration-300 cursor-pointer mb-2"
-              onClick={() => toggleStep(index)}
-            >
-              <div className="flex items-center justify-between p-3">
-                {/* Left side: Icon and content */}
-                <div className="flex items-center space-x-3">
-                  {/* Status Icon */}
-                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-
-                  {/* Step Icon */}
-                  <span className="text-lg flex-shrink-0">{step.icon}</span>
-
-                  {/* Step Content */}
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">{step.title}</h4>
-                    <p className="text-xs text-gray-600">{step.summary}</p>
-                  </div>
-                </div>
-
-                {/* Right side: Duration and arrow */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-gray-500">{step.duration}</span>
-                  <svg
-                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Expanded Details */}
-              {isExpanded && (
-                <div className="px-3 pb-3">
-                  <div className="bg-green-50 rounded p-3 text-sm text-gray-700">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
-                        ul: ({children}) => <ul className="list-disc list-inside mb-2 last:mb-0">{children}</ul>,
-                        li: ({children}) => <li className="mb-1">{children}</li>,
-                        strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
-                        code: ({children}) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>
-                      }}
-                    >
-                      {step.details}
-                    </ReactMarkdown>
-                  </div>
-                </div>
-              )}
+      {/* Loading State */}
+      {isLoading && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="relative">
+              <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
             </div>
-          );
-        })}
-      </div>
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">正在为您查找答案</h3>
+              <p className="text-sm text-gray-600">
+                正在搜索相关文档和资料，请稍候...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Answer Content */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      {/* Answer Content - Only show when answer is available */}
+      {answer && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">
             AI 回答
@@ -475,9 +371,10 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
             </div>
           )}
         </div>
+      )}
 
       {/* Sources Modal */}
-      {showSourcesModal && (
+      {showSourcesModal && answer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
             {/* Modal Header */}

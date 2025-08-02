@@ -243,13 +243,13 @@ const HomePage = () => {
               </div>
             ))}
 
-            {/* Loading State */}
+            {/* Loading State - Show Analysis Process */}
             {state.isLoading && (
-              <div className="flex justify-center px-4">
-                <LoadingSpinner
-                  type="simple"
-                  text="正在搜索答案..."
-                  question={state.currentQuery}
+              <div className="px-4">
+                <AgentAnswerDisplay
+                  answer={null}
+                  isLoading={true}
+                  currentQuery={state.currentQuery}
                 />
               </div>
             )}
