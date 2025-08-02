@@ -54,26 +54,26 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
 
   return (
     <div className={`border rounded-lg transition-all duration-200 ${
-      isActive ? 'border-blue-300 bg-blue-50' : 
-      isCompleted ? 'border-green-300 bg-green-50' : 
+      isActive ? 'border-blue-300 bg-blue-50' :
+      isCompleted ? 'border-green-300 bg-green-50' :
       'border-gray-200 bg-gray-50'
     }`}>
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-3 text-left hover:bg-opacity-80 transition-colors"
+        className="w-full flex items-center justify-between p-2 text-left hover:bg-opacity-80 transition-colors"
       >
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
           <StepIcon type={step.type} isActive={isActive} isCompleted={isCompleted} />
           <div>
-            <h3 className={`font-medium ${
-              isCompleted ? 'text-green-800' : 
-              isActive ? 'text-blue-800' : 
+            <h3 className={`text-sm font-medium ${
+              isCompleted ? 'text-green-800' :
+              isActive ? 'text-blue-800' :
               'text-gray-600'
             }`}>
               {stepTitles[step.type]}
             </h3>
             {step.summary && (
-              <p className="text-sm text-gray-600 mt-1">{step.summary}</p>
+              <p className="text-xs text-gray-600">{step.summary}</p>
             )}
           </div>
         </div>
@@ -82,9 +82,9 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
             <span className="text-xs text-gray-500">{step.duration}ms</span>
           )}
           {isExpanded ? (
-            <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+            <ChevronDownIcon className="w-3 h-3 text-gray-400" />
           ) : (
-            <ChevronRightIcon className="w-4 h-4 text-gray-400" />
+            <ChevronRightIcon className="w-3 h-3 text-gray-400" />
           )}
         </div>
       </button>
@@ -124,7 +124,7 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
 
 const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [copied, setCopied] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(-1); // Start with -1 to show no steps initially
   const [expandedSteps, setExpandedSteps] = useState(new Set());
   const [isProcessing, setIsProcessing] = useState(true);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
@@ -166,9 +166,10 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
     if (!answer || !isProcessing) return;
 
     const processSteps = async () => {
-      // Step 1: Analyze
+      // Step 1: Analyze - Start immediately
+      setCurrentStep(0);
       await new Promise(resolve => setTimeout(resolve, 800));
-      setSteps(prev => prev.map((step, idx) => 
+      setSteps(prev => prev.map((step, idx) =>
         idx === 0 ? {
           ...step,
           summary: '已识别问题类型和关键词',
@@ -294,31 +295,24 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
   return (
     <div className="space-y-6">
-      {/* Question Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">
-          {answer.question}
-        </h2>
-        <div className="flex items-center space-x-4 text-sm text-gray-500">
-          <span>🤖 Agent 模式分析</span>
-          <span>•</span>
-          <span>{isProcessing ? '分析中...' : '分析完成'}</span>
-        </div>
-      </div>
-
       {/* Agent Processing Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
-        {steps.map((step, index) => (
-          <AnalysisStep
-            key={index}
-            step={step}
-            isActive={currentStep === index && isProcessing}
-            isCompleted={currentStep > index}
-            isExpanded={expandedSteps.has(index)}
-            onToggle={() => toggleStep(index)}
-          />
-        ))}
+        {steps.map((step, index) => {
+          // Only show steps up to current step + 1 (to show the next step being processed)
+          if (index > currentStep + 1) return null;
+
+          return (
+            <AnalysisStep
+              key={index}
+              step={step}
+              isActive={currentStep === index && isProcessing}
+              isCompleted={currentStep > index}
+              isExpanded={expandedSteps.has(index)}
+              onToggle={() => toggleStep(index)}
+            />
+          );
+        })}
       </div>
 
       {/* Final Answer */}
