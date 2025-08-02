@@ -69,6 +69,10 @@
       "image": "Upload Image",
       "document": "Upload Document",
       "log": "Upload Log File"
+    },
+    "labels": {
+      "document": "Document",
+      "log": "Log"
     }
   },
   "home": {

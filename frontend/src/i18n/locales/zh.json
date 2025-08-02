@@ -69,6 +69,10 @@
       "image": "上传图片",
       "document": "上传文档",
       "log": "上传日志文件"
+    },
+    "labels": {
+      "document": "文档",
+      "log": "日志"
     }
   },
   "home": {

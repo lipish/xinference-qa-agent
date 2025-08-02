@@ -15,6 +15,7 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
   const textareaRef = useRef(null);
   const imageInputRef = useRef(null);
   const documentInputRef = useRef(null);
@@ -260,7 +261,7 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
 
             {/* Bottom Toolbar */}
             <div className="flex items-center justify-between px-4 pb-3 pt-1">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 relative">
                 {/* Image Upload */}
                 <button
                   type="button"
@@ -272,24 +273,44 @@ const QuestionInput = ({ onSubmit, placeholder = "Ask anything about Xinference.
                 </button>
 
                 {/* Document Upload */}
-                <button
-                  type="button"
-                  onClick={() => documentInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                  title={t('input.tools.document')}
-                >
-                  <DocumentIcon className="h-5 w-5" />
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => documentInputRef.current?.click()}
+                    onMouseEnter={() => setHoveredButton('document')}
+                    onMouseLeave={() => setHoveredButton(null)}
+                    className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                    title={t('input.tools.document')}
+                  >
+                    <DocumentIcon className="h-5 w-5" />
+                  </button>
+                  {hoveredButton === 'document' && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-10">
+                      {t('input.labels.document')}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-800"></div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Log/JSON Upload */}
-                <button
-                  type="button"
-                  onClick={() => logInputRef.current?.click()}
-                  className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
-                  title={t('input.tools.log')}
-                >
-                  <ClipboardDocumentListIcon className="h-5 w-5" />
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => logInputRef.current?.click()}
+                    onMouseEnter={() => setHoveredButton('log')}
+                    onMouseLeave={() => setHoveredButton(null)}
+                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                    title={t('input.tools.log')}
+                  >
+                    <ClipboardDocumentListIcon className="h-5 w-5" />
+                  </button>
+                  {hoveredButton === 'log' && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-10">
+                      {t('input.labels.log')}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-800"></div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Submit Button */}
