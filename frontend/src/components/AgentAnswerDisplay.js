@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -266,72 +267,59 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
           return (
             <div
               key={index}
-              className={`border rounded-lg transition-all duration-300 cursor-pointer ${
-                isActive
-                  ? 'bg-blue-50 border-blue-200'
-                  : isCompleted
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-gray-50 border-gray-200'
-              }`}
+              className="bg-green-50 border border-green-200 rounded-lg transition-all duration-300 cursor-pointer mb-2"
               onClick={() => toggleStep(index)}
             >
-              <div className="flex items-center space-x-3 p-2">
-                <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
-                  isActive
-                    ? 'bg-blue-100'
-                    : isCompleted
-                      ? 'bg-green-100'
-                      : 'bg-gray-100'
-                }`}>
-                  {isCompleted ? (
-                    <span className="text-green-600 text-xs">✓</span>
-                  ) : isActive ? (
-                    <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <span className="text-gray-400 text-xs">{step.icon}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm">{step.icon}</span>
-                      <span className={`text-sm font-medium ${
-                        isActive ? 'text-blue-700' : isCompleted ? 'text-green-700' : 'text-gray-600'
-                      }`}>
-                        {step.title}
-                      </span>
-                      <span className="text-xs text-gray-500">{step.duration}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      {isActive && (
-                        <div className="flex space-x-1">
-                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce"></div>
-                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-1 h-1 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                        </div>
-                      )}
-                      <span className={`text-xs transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
-                        ▼
-                      </span>
-                    </div>
+              <div className="flex items-center justify-between p-3">
+                {/* Left side: Icon and content */}
+                <div className="flex items-center space-x-3">
+                  {/* Status Icon */}
+                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
                   </div>
-                  <p className={`text-xs mt-1 ${
-                    isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
-                  }`}>
-                    {step.summary}
-                  </p>
+
+                  {/* Step Icon */}
+                  <span className="text-lg flex-shrink-0">{step.icon}</span>
+
+                  {/* Step Content */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900">{step.title}</h4>
+                    <p className="text-xs text-gray-600">{step.summary}</p>
+                  </div>
+                </div>
+
+                {/* Right side: Duration and arrow */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-gray-500">{step.duration}</span>
+                  <svg
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </div>
               </div>
 
               {/* Expanded Details */}
               {isExpanded && (
-                <div className="mt-3 mx-3 mb-3">
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                    <div className="prose prose-sm max-w-none text-gray-700">
-                      <div className="whitespace-pre-line text-sm leading-relaxed">
-                        {step.details}
-                      </div>
-                    </div>
+                <div className="px-3 pb-3">
+                  <div className="bg-green-50 rounded p-3 text-sm text-gray-700">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+                        ul: ({children}) => <ul className="list-disc list-inside mb-2 last:mb-0">{children}</ul>,
+                        li: ({children}) => <li className="mb-1">{children}</li>,
+                        strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                        code: ({children}) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>
+                      }}
+                    >
+                      {step.details}
+                    </ReactMarkdown>
                   </div>
                 </div>
               )}
