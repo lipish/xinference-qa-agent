@@ -124,9 +124,6 @@ const AnalysisStep = ({ step, isActive, isCompleted, isExpanded, onToggle }) => 
 
 const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const [copied, setCopied] = useState(false);
-  const [currentStep, setCurrentStep] = useState(-1); // Start with -1 to show no steps initially
-  const [expandedSteps, setExpandedSteps] = useState(new Set());
-  const [isProcessing, setIsProcessing] = useState(true);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const { state, actions } = useQuery();
@@ -134,93 +131,7 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simulate agent processing steps
-  const [steps, setSteps] = useState([
-    {
-      type: 'analyze',
-      summary: '正在分析您的问题...',
-      details: null,
-      duration: null
-    },
-    {
-      type: 'search',
-      summary: '搜索相关文档和资源...',
-      details: null,
-      duration: null
-    },
-    {
-      type: 'synthesize',
-      summary: '整合信息并分析...',
-      details: null,
-      duration: null
-    },
-    {
-      type: 'respond',
-      summary: '生成详细回答...',
-      details: null,
-      duration: null
-    }
-  ]);
 
-  useEffect(() => {
-    if (!answer || !isProcessing) return;
-
-    const processSteps = async () => {
-      // Step 1: Analyze - Start immediately
-      setCurrentStep(0);
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setSteps(prev => prev.map((step, idx) =>
-        idx === 0 ? {
-          ...step,
-          summary: '已识别问题类型和关键词',
-          details: `**问题分析:**\n- 问题类型: ${answer.question_type || '技术咨询'}\n- 关键词: ${answer.keywords?.join(', ') || 'Xinference, 配置, 使用'}\n- 复杂度: ${answer.complexity || '中等'}`,
-          duration: 750
-        } : step
-      ));
-      setCurrentStep(1);
-
-      // Step 2: Search
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setSteps(prev => prev.map((step, idx) => 
-        idx === 1 ? {
-          ...step,
-          summary: `找到 ${answer.sources?.length || 3} 个相关资源`,
-          details: `**搜索结果:**\n${answer.sources?.map((source, i) => 
-            `${i + 1}. ${source.title || source.url}\n   - 相关度: ${Math.round((source.relevance || 0.8) * 100)}%\n   - 来源: ${source.source_type || 'documentation'}`
-          ).join('\n') || '- 官方文档\n- GitHub Issues\n- 社区讨论'}`,
-          duration: 1150
-        } : step
-      ));
-      setCurrentStep(2);
-
-      // Step 3: Synthesize
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSteps(prev => prev.map((step, idx) => 
-        idx === 2 ? {
-          ...step,
-          summary: '已整合多个信息源',
-          details: `**信息整合:**\n- 交叉验证了 ${answer.sources?.length || 3} 个信息源\n- 识别出关键解决方案\n- 评估答案可信度: ${Math.round((answer.confidence || 0.85) * 100)}%\n- 准备生成结构化回答`,
-          duration: 950
-        } : step
-      ));
-      setCurrentStep(3);
-
-      // Step 4: Respond
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setSteps(prev => prev.map((step, idx) => 
-        idx === 3 ? {
-          ...step,
-          summary: '回答已生成完成',
-          details: `**回答生成:**\n- 结构化组织信息\n- 添加代码示例和配置\n- 包含最佳实践建议\n- 总响应时间: ${Math.round((answer.response_time || 1.2) * 1000)}ms`,
-          duration: 550
-        } : step
-      ));
-      setCurrentStep(4);
-      setIsProcessing(false);
-    };
-
-    processSteps();
-  }, [answer, isProcessing]);
 
   // Check if this answer is favorited
   useEffect(() => {
@@ -295,33 +206,12 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
   return (
     <div className="space-y-6">
-      {/* Agent Processing Steps */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
-        {steps.map((step, index) => {
-          // Only show steps up to current step + 1 (to show the next step being processed)
-          if (index > currentStep + 1) return null;
-
-          return (
-            <AnalysisStep
-              key={index}
-              step={step}
-              isActive={currentStep === index && isProcessing}
-              isCompleted={currentStep > index}
-              isExpanded={expandedSteps.has(index)}
-              onToggle={() => toggleStep(index)}
-            />
-          );
-        })}
-      </div>
-
-      {/* Final Answer */}
-      {!isProcessing && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-start justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {t('agent.finalAnswer', '最终回答')}
-            </h3>
+      {/* Answer Content */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="flex items-start justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            AI 回答
+          </h3>
             <div className="flex items-center space-x-2 ml-4">
               <button
                 onClick={() => setShowSourcesModal(true)}
@@ -542,8 +432,7 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

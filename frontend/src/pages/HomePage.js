@@ -80,9 +80,6 @@ const HomePage = () => {
     actions.setQuery(questionText);
     actions.setLoading(true);
 
-    // Force a small delay to ensure UI updates are visible
-    await new Promise(resolve => setTimeout(resolve, 100));
-
     try {
       // For now, we'll just use the text. File handling can be added later
       const response = await apiService.askQuestion(questionText);
