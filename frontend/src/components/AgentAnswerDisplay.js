@@ -233,27 +233,13 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
     }
   ];
 
-  // Progressive step processing
+  // Initialize all steps as completed to avoid flickering
   useEffect(() => {
     if (!answer) return;
 
-    // Start processing after a short delay to avoid flickering
-    const startProcessing = async () => {
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      if (!answer) return; // Check again after delay
-
-      setIsProcessing(true);
-
-      for (let i = 0; i < analysisSteps.length; i++) {
-        setCurrentStep(i);
-        await new Promise(resolve => setTimeout(resolve, 600));
-      }
-      setCurrentStep(analysisSteps.length);
-      setIsProcessing(false);
-    };
-
-    startProcessing();
+    // Show all steps as completed immediately to prevent flickering
+    setCurrentStep(analysisSteps.length);
+    setIsProcessing(false);
   }, [answer]);
 
   const toggleStep = (index) => {
@@ -272,11 +258,9 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
       <div className="space-y-2">
         <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
         {analysisSteps.map((step, index) => {
-          // Only show steps up to current step + 1 (to show the next step being processed)
-          if (index > currentStep + 1) return null;
-
-          const isActive = currentStep === index && isProcessing;
-          const isCompleted = currentStep > index;
+          // Show all steps as completed to avoid flickering
+          const isActive = false;
+          const isCompleted = true;
           const isExpanded = expandedSteps.has(index);
 
           return (
