@@ -36,16 +36,18 @@ const SourceBadge = ({ sourceType }) => {
 };
 
 const ConfidenceIndicator = ({ confidence }) => {
+  const { t } = useTranslation();
+
   const getConfidenceColor = (score) => {
     if (score >= 0.8) return 'text-green-600';
     if (score >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   };
-  
+
   const getConfidenceLabel = (score) => {
-    if (score >= 0.8) return 'High confidence';
-    if (score >= 0.6) return 'Medium confidence';
-    return 'Low confidence';
+    if (score >= 0.8) return t('answer.highConfidence');
+    if (score >= 0.6) return t('answer.mediumConfidence');
+    return t('answer.lowConfidence');
   };
   
   return (
@@ -297,7 +299,7 @@ const AnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
           
           {onFeedback && (
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">Was this helpful?</span>
+              <span className="text-sm text-gray-500">{t('answer.wasThisHelpful')}</span>
               <button
                 onClick={() => onFeedback(true)}
                 className="p-1 text-gray-400 hover:text-green-600 transition-colors"
@@ -319,7 +321,7 @@ const AnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
       {answer.sources && answer.sources.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Sources ({answer.sources.length})
+            {t('answer.sourcesTitle')} ({answer.sources.length})
           </h3>
           <div className="grid gap-4 md:grid-cols-2">
             {answer.sources.map((source, index) => (

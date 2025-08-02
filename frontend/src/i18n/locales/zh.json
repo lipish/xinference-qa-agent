@@ -303,7 +303,12 @@
     "addToFavorites": "添加到收藏",
     "removeFromFavorites": "从收藏中移除",
     "copyAnswer": "复制答案",
-    "shareAnswer": "分享答案"
+    "shareAnswer": "分享答案",
+    "highConfidence": "高置信度",
+    "mediumConfidence": "中等置信度",
+    "lowConfidence": "低置信度",
+    "wasThisHelpful": "这个回答有帮助吗？",
+    "sourcesTitle": "参考来源"
   },
   "history": {
     "title": "提问历史",

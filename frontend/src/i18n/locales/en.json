@@ -287,7 +287,12 @@
     "addToFavorites": "Add to Favorites",
     "removeFromFavorites": "Remove from Favorites",
     "copyAnswer": "Copy Answer",
-    "shareAnswer": "Share Answer"
+    "shareAnswer": "Share Answer",
+    "highConfidence": "High confidence",
+    "mediumConfidence": "Medium confidence",
+    "lowConfidence": "Low confidence",
+    "wasThisHelpful": "Was this helpful?",
+    "sourcesTitle": "Sources"
   },
   "history": {
     "title": "Question History",
