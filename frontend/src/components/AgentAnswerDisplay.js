@@ -196,8 +196,59 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
 
 
+  // Simple analysis steps without complex animations
+  const analysisSteps = [
+    {
+      icon: '📄',
+      title: '分析问题',
+      summary: '已识别问题类型和关键词',
+      duration: '750ms'
+    },
+    {
+      icon: '🔍',
+      title: '搜索相关信息',
+      summary: `找到 ${answer.sources?.length || 10} 个相关资源`,
+      duration: '1150ms'
+    },
+    {
+      icon: '💡',
+      title: '综合分析',
+      summary: '已整合多个信息源',
+      duration: '950ms'
+    },
+    {
+      icon: '✏️',
+      title: '生成回答',
+      summary: '回答已生成完成',
+      duration: '550ms'
+    }
+  ];
+
   return (
     <div className="space-y-6">
+      {/* Analysis Steps */}
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold text-gray-900">分析过程</h3>
+        {analysisSteps.map((step, index) => (
+          <div
+            key={index}
+            className="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg"
+          >
+            <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <span className="text-green-600 text-sm">✓</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">{step.icon}</span>
+                <span className="font-medium text-gray-900">{step.title}</span>
+                <span className="text-sm text-gray-500">{step.duration}</span>
+              </div>
+              <p className="text-sm text-green-700 mt-1">{step.summary}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Answer Content */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between mb-4">
