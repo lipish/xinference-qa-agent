@@ -75,7 +75,19 @@
       "log": "Log"
     }
   },
+  "agent": {
+    "steps": {
+      "analyze": "Analyze Question",
+      "search": "Search Information",
+      "synthesize": "Synthesize Analysis",
+      "respond": "Generate Response"
+    },
+    "finalAnswer": "Final Answer"
+  },
   "home": {
+    "displayMode": "Display Mode",
+    "agentMode": "Agent Mode",
+    "classicMode": "Classic Mode",
     "hero": {
       "title": "Ask anything about {{name}}",
       "subtitle": "Get instant answers about installation, deployment, troubleshooting, and more. Powered by AI and backed by official documentation and community knowledge.",

@@ -75,7 +75,19 @@
       "log": "日志"
     }
   },
+  "agent": {
+    "steps": {
+      "analyze": "分析问题",
+      "search": "搜索相关信息",
+      "synthesize": "综合分析",
+      "respond": "生成回答"
+    },
+    "finalAnswer": "最终回答"
+  },
   "home": {
+    "displayMode": "显示模式",
+    "agentMode": "Agent 模式",
+    "classicMode": "经典模式",
     "hero": {
       "title": "请输入您的问题",
       "subtitle": "",
