@@ -287,25 +287,6 @@ const AgentAnswerDisplay = ({ answer, onFeedback, onClearAnswer }) => {
 
   return (
     <div className="space-y-6">
-      {/* Navigation Bar */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={handleBackToHome}
-          className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <HomeIcon className="w-4 h-4" />
-          <span className="text-sm font-medium">{t('common.back', '返回主页')}</span>
-        </button>
-
-        <button
-          onClick={handleNewQuestion}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors"
-        >
-          <PlusIcon className="w-4 h-4" />
-          <span className="text-sm font-medium">{t('common.newQuestion', '新问题')}</span>
-        </button>
-      </div>
-
       {/* Question Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-2">
